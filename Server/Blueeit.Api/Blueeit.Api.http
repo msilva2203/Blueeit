@@ -1,0 +1,29 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+
+###
+
+GET {{BlueeitApi_HostAddress}}
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/user/1
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/user/
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/user/
+Accept: application/json
+Content-Type: application/json
+
+{
+    "Username": "msilva",
+    "Email": "marcosilva2203@outlook.pt"
+}
+
+###
