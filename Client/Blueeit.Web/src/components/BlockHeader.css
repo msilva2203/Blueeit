@@ -1,0 +1,10 @@
+.blueeit-block-header {
+    background: linear-gradient(
+        to bottom,
+        var(--color-sky-4),
+        var(--color-mint-7)
+    );
+
+    padding: 8px;
+    color:var(--color-blue-12);
+}

@@ -1,0 +1,14 @@
+footer {
+    height: 128px;
+
+    display: flex;
+    align-items: top;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+
+    border-top: 1px solid var(--color-greyneutral-8);
+
+    background-color: var(--color-sky-1);
+    color: var(--color-greyneutral-12);
+}

@@ -1,0 +1,16 @@
+.blueeit-breadcrumbs-main {
+    display: flex;
+    flex-direction: right;
+    gap: 4px;
+    padding-bottom: 4px;
+}
+
+.blueeit-breadcrumbs-item {
+    display: flex;
+    flex-direction: right;
+    gap: 4px;
+}
+
+.blueeit-breadcrumbs-item h3 {
+    font-size: 90%;
+}

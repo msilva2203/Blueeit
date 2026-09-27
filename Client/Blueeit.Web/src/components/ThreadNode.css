@@ -1,0 +1,71 @@
+.blueeit-threadnode-body {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.blueeit-threadnode-icon {
+    display: table-cell;
+    vertical-align: top;
+    padding: 12px 8px;
+    width: 36px;
+    height: 36px;
+    position: relative;
+}
+
+.blueeit-threadnode-icon-avatar {
+    background: linear-gradient(
+        to right,
+        var(--color-greyneutral-4),
+        var(--color-greyneutral-6)
+    );
+    border: 1px solid var(--color-greyneutral-8);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.blueeit-threadnode-main {
+    display: table-cell;
+    vertical-align: top;
+    padding: 12px 8px;
+}
+
+.blueeit-threadnode-stats {
+    display: table-cell;
+    width: 140px;
+    vertical-align: top;
+    text-align: center;
+    padding: 12px 8px;
+}
+
+.blueeit-threadnode-stats-pairs {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.blueeit-threadnode-stats-pairs dt {
+    float: left;
+    max-width: 100%;
+    margin-right: 8px;
+    display: block;
+    padding: 0;
+    margin: 0;
+    line-height: 150%;
+}
+
+.blueeit-threadnode-stats-pairs dd {
+    float: right;
+    text-align: right;
+    max-width: 100%;
+    display: block;
+    padding: 0;
+    margin: 0;
+    line-height: 150%;
+}
+
+.blueeit-threadnode-latest {
+    display: table-cell;
+    width: 190px;
+}

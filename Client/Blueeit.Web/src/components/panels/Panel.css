@@ -1,0 +1,11 @@
+.blueeit-panel-header {
+    padding: 8px;
+}
+
+.blueeit-panel-body {
+    padding: 8px;
+}
+
+.blueeit-panel-body.placeholder {
+    min-height: 396px;
+}

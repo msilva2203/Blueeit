@@ -1,0 +1,82 @@
+.blueeit-pagination {
+    display: flex;
+    gap: 6px;
+}
+
+.blueeit-pagination-main {
+    display: inline-table;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.blueeit-pagination-item {
+    background-color: var(--color-sky-2);
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-greyneutral-8);
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.blueeit-pagination-item:hover {
+    background-color: var(--color-sky-6);
+}
+
+.blueeit-pagination-item.jump {
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.blueeit-pagination-item.page {
+    display: table-cell;
+}
+
+.blueeit-pagination-item.page.current {
+    background-color: var(--color-mint-6);
+    border-width: 3px;
+    border-color: var(--color-mint-10);
+}
+
+.blueeit-pagination-item.page:first-child {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.blueeit-pagination-item.page:last-child {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.blueeit-pagination-btn {
+    display: block;
+    background-color: transparent;
+    text-decoration: none;
+    border-width: 0;
+}
+
+.blueeit-pagination-content {
+    font-size: 90%;
+    line-height: 1;
+    padding: 8px 4px;
+}
+
+.blueeit-pagination-content.current {
+    color: var(--color-mint-10);
+    font-weight: 500;
+}
+
+.blueeit-pagination-item.jump.prev {
+    padding-left: 12px;
+}
+
+.blueeit-pagination-item.jump.next {
+    padding-right: 12px;
+}
+
+button:hover {
+    cursor: pointer;
+}

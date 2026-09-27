@@ -1,0 +1,3 @@
+.blueeit-postlist-item:not(:first-child) {
+    padding-top: 6px;
+}

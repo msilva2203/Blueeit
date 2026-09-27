@@ -1,0 +1,23 @@
+.blueeit-panel-stats-pairs {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.blueeit-panel-stats-pairs dt {
+    float: left;
+    max-width: 100%;
+    line-height: 150%;
+    padding: 0;
+    margin: 0;
+    margin-right: 8px;
+}
+
+.blueeit-panel-stats-pairs dd {
+    float: right;
+    text-align: right;
+    max-width: 100%;
+    line-height: 150%;
+    padding: 0;
+    margin: 0;
+}

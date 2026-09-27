@@ -1,0 +1,40 @@
+.blueeit-forumnode-body {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.blueeit-forumnode-main {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+
+.blueeit-forumnode-stats {
+    display: table-cell;
+    width: 140px;
+    vertical-align: middle;
+    text-align: center;
+    padding: 12px 8px;
+    
+}
+
+.blueeit-forumnode-pairs {
+    display: inline-table;
+    width: 50%;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    float: left;
+}
+
+.blueeit-forumnode-pairs dt {
+    display: table-row;
+    margin: 0;
+}
+
+.blueeit-forumnode-pairs dd {
+    display: table-row;
+    margin: 0;
+}

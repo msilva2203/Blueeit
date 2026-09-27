@@ -1,0 +1,82 @@
+.blueeit-memberbanner {
+    display: block;
+    min-height: 240px;
+}
+
+.blueeit-memberbanner-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--color-greyneutral-8);
+    position: relative;
+    background: linear-gradient(
+        to right,
+        var(--color-blue-1),
+        var(--color-cyan-4)
+    );
+    
+    box-sizing: border-box;
+
+    background-size: cover;
+    background-position-x: center;
+    background-repeat: no-repeat;
+}
+
+.blueeit-memberbanner-main-content {
+    position: relative;
+}
+
+.blueeit-memberbanner-avatar {
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    padding: 12px;
+    
+}
+
+.blueeit-memberbanner-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.blueeit-memberbanner-avatar-avatar {
+    width: 192px;
+    height: 192px;
+    font-size: 115px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--color-greyneutral-8);
+    vertical-align: top;
+    overflow: hidden;
+    background: linear-gradient(
+        to right,
+        var(--color-greyneutral-4),
+        var(--color-greyneutral-6)
+    );
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.blueeit-memberbanner-info {
+    padding: 12px;
+    padding-left: 214px;
+}
+
+.blueeit-memberbanner-username {
+    
+}
+
+.blueeit-memberbanner-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 12px;
+    padding-left: 214px;
+    
+}
+
+.blueeit-memberbanner-blurb {
+    margin-top: 2px;
+}

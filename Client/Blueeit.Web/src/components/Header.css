@@ -1,0 +1,45 @@
+.blueeit-header {
+    background-color:var(--color-greyneutral-1);
+    background: linear-gradient(
+        to right,
+        var(--color-greyneutral-1),
+        var(--color-greyneutral-2)
+    );
+    padding-top: 96px;
+    width:100%;
+}
+
+.blueeit-header-logo {
+    color:var(--color-blue-12);
+
+    font-size: 56px;
+    font-weight: 900;
+    line-height:1;
+    margin-bottom: 16px;
+    letter-spacing: -1.68px;
+
+    justify-self: left;
+    
+}
+
+.blueeit-header-internal {
+    background-color:var(--color-sky-2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+}
+
+.blueeit-header-nav-list {
+    display: flex;
+    gap: 0px;
+    margin: 0;
+    padding: 0px;
+    list-style: none;
+    align-items: center;
+    
+}
+
+.blueeit-header-nav-list-item {
+    text-decoration: none;
+}
