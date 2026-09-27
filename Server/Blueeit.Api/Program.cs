@@ -4,16 +4,33 @@ using Blueeit.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IUserService, InMemoryUserService>();
-builder.Services.AddSingleton<IThreadService, InMemoryThreadService>();
-builder.Services.AddSingleton<IPostService, InMemoryPostService>();
+builder.Services.AddControllers();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Client", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddSingleton<IUserService, InMemoryUserService>();
+builder.Services.AddSingleton<IForumService, InMemoryForumService>();
+builder.Services.AddSingleton<IForumThreadService, InMemoryForumThreadService>();
+builder.Services.AddSingleton<IPostService, InMemoryPostService>();
+builder.Services.AddSingleton<IStatsService, InMemoryStatsService>();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Welcome to the Blueeit API!");
+//app.UseHttpsRedirection();
+
+app.UseCors("Client");
 
 app.MapControllers();
+
+app.MapGet("/", () => "Welcome to the Blueeit API!");
 
 app.Run();
