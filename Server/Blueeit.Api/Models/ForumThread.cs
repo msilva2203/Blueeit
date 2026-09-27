@@ -1,10 +1,10 @@
 namespace Blueeit.Api.Models;
 
-public class Post
+public class ForumThread
 {
     public int Id { get; set; }
-    public int ThreadId { get; set; }
     public int AuthorId { get; set; }
+    public int? ForumId { get; set; }
     public DateTime CreationDate { get; set; }
-    public required string Content { get; set; }
+    public required string Title { get; set; }
 }
