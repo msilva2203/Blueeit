@@ -1,11 +1,13 @@
-using Blueeit.Api.Models;
+using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.Services;
+using Blueeit.Api.DTOs.User;
+using Blueeit.Api.Mappings;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blueeit.Api.Controllers;
 
 [ApiController]
-[Route("api/user")]
+[Route("api/v1/users")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -15,35 +17,64 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("{id:int}")]
-    public ActionResult<User> GetUser(int id)
+    [HttpGet]
+    public async Task<ActionResult<PaginatedResult<UserResponse>>> GetAllUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var user = _userService.GetUserByIdAsync(id);
+        var result = await _userService.GetAllUsersAsync(page, pageSize);
+
+        var responses = result.Items
+            .Select(user => user.ToResponse())
+            .ToList();
+
+        return Ok(new PaginatedResult<UserResponse>
+        {
+            Items = responses,
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalCount = result.TotalCount
+        });
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<UserResponse>> GetUser(int id)
+    {
+        var user = await _userService.GetUserByIdAsync(id);
 
         if (user is null)
         {
             return NotFound();
         }
 
-        return Ok(user);
+        var response = user.ToResponse();
+
+        return Ok(response);
     }
 
-    [HttpGet("")]
-    public ActionResult<IReadOnlyList<User>> GetAllUsers()
+    [HttpPost]
+    public async Task<ActionResult<UserResponse>> CreateUser(CreateUserRequest request)
     {
-        var users = _userService.GetAllUsers();
+        var user = await _userService.CreateUserAsync
+        (
+            request.Username,
+            request.Email,
+            request.Password
+        );
 
-        return Ok(users);
+        var response = user.ToResponse();
+
+        return Ok(response);
     }
 
-    [HttpPost("")]
-    public ActionResult<User> CreateUser(UserCreationDto userCreationDto)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        var username = userCreationDto.Username;
-        var email = userCreationDto.Email;
+        var result = await _userService.DeleteUserAsync(id);
 
-        var user = _userService.CreateUserAsync(username, email);
+        if (!result)
+        {
+            return NotFound();
+        }
 
-        return Ok(user);
+        return NoContent();
     }
 }
