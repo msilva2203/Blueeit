@@ -1,0 +1,48 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+@BlueeitApi_Version = v1
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads/1
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "forumId": 1,
+    "title": "Bad Matchmaking"
+}
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "forumId": 2,
+    "title": "Stuck in the level geometry"
+}
+
+###
+
+DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads/1
+Accept: application/json
+
+###

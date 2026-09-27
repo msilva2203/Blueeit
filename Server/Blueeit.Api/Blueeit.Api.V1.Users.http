@@ -1,0 +1,31 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+@BlueeitApi_Version = v1
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/1
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users
+Accept: application/json
+Content-Type: application/json
+
+{
+    "username": "msilva",
+    "email": "marcosilva2203@outlook.pt",
+    "password": "abc123"
+}
+
+###

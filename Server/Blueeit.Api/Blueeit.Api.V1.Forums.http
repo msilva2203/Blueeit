@@ -1,0 +1,58 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+@BlueeitApi_Version = v1
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/subforums
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/subforums?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums
+Accept: application/json
+Content-Type: application/json
+
+{
+    "parentId": null,
+    "authorId": 1,
+    "title": "Bug Reports"
+}
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums
+Accept: application/json
+Content-Type: application/json
+
+{
+    "parentId": 1,
+    "authorId": 1,
+    "title": "Gameplay Bug Reports"
+}
+
+###
+
+DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1
+Accept: application/json
+
+###

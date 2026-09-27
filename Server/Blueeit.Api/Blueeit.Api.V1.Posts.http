@@ -1,0 +1,36 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+@BlueeitApi_Version = v1
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/posts
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/posts?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/posts/1
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/posts
+Accept: application/json
+Content-Type: application/json
+
+{
+    "threadId": 1,
+    "authorId": 1,
+    "content": "This is a post!"
+}
+
+###
+
+DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/posts/1
+Accept: application/json
+
+###
