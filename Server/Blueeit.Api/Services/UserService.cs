@@ -1,4 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
+using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.Models;
 
 namespace Blueeit.Api.Services;
@@ -8,13 +8,15 @@ namespace Blueeit.Api.Services;
  */
 public interface IUserService
 {
-    User? GetUserByIdAsync(int id);
+    Task<User?> GetUserByIdAsync(int id);
 
-    IReadOnlyList<User> GetAllUsers();
+    Task<int> GetCountAsync();
 
-    User CreateUserAsync(string username, string email);
+    Task<PaginatedResult<User>> GetAllUsersAsync(int page, int pageSize);
 
-    bool DeleteUserAsync(int id);
+    Task<User> CreateUserAsync(string username, string email, string password);
+
+    Task<bool> DeleteUserAsync(int id);
 }
 
 /*
@@ -25,44 +27,66 @@ public class InMemoryUserService : IUserService
     private readonly List<User> _users = [];
     private int _nextId = 1;
 
-    public User? GetUserByIdAsync(int id)
+    public Task<User?> GetUserByIdAsync(int id)
     {
-        return _users.FirstOrDefault(user => user.Id == id);
+        User? user = _users.FirstOrDefault(user => user.Id == id);
+        return Task.FromResult(user);
     }
 
-    public IReadOnlyList<User> GetAllUsers()
+    public Task<int> GetCountAsync()
     {
-        return _users;
+        var count = _users.Count();
+        return Task.FromResult(count);
     }
 
-    public User CreateUserAsync(string username, string email)
+    public Task<PaginatedResult<User>> GetAllUsersAsync(int page, int pageSize)
+    {
+        int totalCount = _users.Count();
+
+        IReadOnlyList<User> users = _users
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var result = new PaginatedResult<User>
+        {
+            Items = users,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+
+        return Task.FromResult(result);
+    }
+
+    public Task<User> CreateUserAsync(string username, string email, string password)
     {
         var user = new User
         {
             Id = _nextId,
             Username = username,
             Email = email,
+            Password = password,
             Date = DateTime.Now
         };
 
+        _users.Add(user);
         _nextId++;
 
-        _users.Add(user);
-
-        return user;
+        return Task.FromResult(user);
     }
 
-    public bool DeleteUserAsync(int id)
+    public Task<bool> DeleteUserAsync(int id)
     {
-        var user = GetUserByIdAsync(id);
+        User? user = _users.FirstOrDefault(user => user.Id == id);
 
         if (user is null)
         {
-            return false;
+            return Task.FromResult(false);
         }
 
         var result = _users.Remove(user);
 
-        return result;
+        return Task.FromResult(result);
     }
 }
