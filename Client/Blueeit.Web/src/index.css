@@ -1,4 +1,77 @@
 :root {
+  --color-sky-1: #0d141f;
+  --color-sky-2: #111a27;
+  --color-sky-3: #112840;
+  --color-sky-4: #113555;
+  --color-sky-5: #154467;
+  --color-sky-6: #1b537b;
+  --color-sky-7: #1f6692;
+  --color-sky-8: #197cae;
+  --color-sky-9: #7ce2fe;
+  --color-sky-10: #a8eeff;
+  --color-sky-11: #75c7f0;
+  --color-sky-12: #c2f3ff;
+  --color-mint-1: #0e1515;
+  --color-mint-2: #0f1b1b;
+  --color-mint-3: #092c2b;
+  --color-mint-4: #003a38;
+  --color-mint-5: #004744;
+  --color-mint-6: #105650;
+  --color-mint-7: #1e685f;
+  --color-mint-8: #277f70;
+  --color-mint-9: #86ead4;
+  --color-mint-10: #a8f5e5;
+  --color-mint-11: #58d5ba;
+  --color-mint-12: #c4f5e1;
+  --color-greyneutral-1: #060a0e;
+  --color-greyneutral-2: #0e141b;
+  --color-greyneutral-3: #141a21;
+  --color-greyneutral-4: #171d25;
+  --color-greyneutral-5: #1d1f23;
+  --color-greyneutral-6: #23262e;
+  --color-greyneutral-7: #2d323d;
+  --color-greyneutral-8: #3d4450;
+  --color-greyneutral-9: #48505E;
+  --color-greyneutral-10: #67707b;
+  --color-greyneutral-11: #8b929a;
+  --color-greyneutral-12: #b8bcbf;
+  --color-mauve-1: #121113;
+  --color-mauve-2: #1a191b;
+  --color-mauve-3: #232225;
+  --color-mauve-4: #2b292d;
+  --color-mauve-5: #323035;
+  --color-mauve-6: #3c393f;
+  --color-mauve-7: #49474e;
+  --color-mauve-8: #625f69;
+  --color-mauve-9: #6f6d78;
+  --color-mauve-10: #7c7a85;
+  --color-mauve-11: #b5b2bc;
+  --color-mauve-12: #eeeef0;
+  --color-blue-1: #0d1520;
+  --color-blue-2: #111927;
+  --color-blue-3: #0d2847;
+  --color-blue-4: #003362;
+  --color-blue-5: #004074;
+  --color-blue-6: #104d87;
+  --color-blue-7: #2870bd;
+  --color-blue-8: #1A9FFF;
+  --color-blue-9: #3b9eff;
+  --color-blue-10: #56abff;
+  --color-blue-11: #70b8ff;
+  --color-blue-12: #c2e6ff;
+  --color-cyan-1: #0b161a;
+  --color-cyan-2: #101b20;
+  --color-cyan-3: #082c36;
+  --color-cyan-4: #003848;
+  --color-cyan-5: #004558;
+  --color-cyan-6: #045468;
+  --color-cyan-7: #12677e;
+  --color-cyan-8: #11809c;
+  --color-cyan-9: #00a2c7;
+  --color-cyan-10: #23afd0;
+  --color-cyan-11: #4ccce6;
+  --color-cyan-12: #b6ecf7;
+
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -33,7 +106,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
-    --text-h: #f3f4f6;
+    --text-h: var(--color-blue-12);;
     --bg: #16171d;
     --border: #2e303a;
     --code-bg: #1f2028;
@@ -52,47 +125,89 @@
 
 body {
   margin: 0;
+  background-color:var(--color-greyneutral-1)
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  text-align: left;
+  
+  line-height: normal;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
+.blueeit-page-content {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-h);
+  line-height: normal;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+  font-size: 24px;
+  color: var(--color-mauve-12);
+  margin: 0 0 8px 0;
 }
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 17px;
+  margin: 0;
+}
+h3 {
+  font-size: 17px;
+  margin: 0;
+}
+a {
+  color:var(--color-blue-12);
+  color:inherit;
+  text-decoration: none;
 }
 p {
   margin: 0;
+}
+dt {
+  color:var(--color-mauve-10);
+  font-size: 14px;
+  margin: 0;
+}
+dd {
+  color:var(--color-mauve-12);
+  font-size: 14px;
+  margin: 0;
+}
+
+.minor {
+  font-size: 12px;
+}
+
+.blueeit-pairs {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.blueeit-pairs.inline {
+  display: inline;
+}
+
+.blueeit-pairs.inline>dt {
+  display: inline;
+}
+
+.blueeit-pairs.inline>dd {
+  display: inline;
 }
 
 code,
@@ -108,4 +223,9 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* */
+main {
+  flex: 1;
 }
