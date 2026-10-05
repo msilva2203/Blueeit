@@ -13,6 +13,21 @@ Accept: application/json
 
 ###
 
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users?key=newest
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users?key=oldest
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users?key=mostMessages
+Accept: application/json
+
+###
+
 GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/1
 Accept: application/json
 
@@ -23,9 +38,42 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "username": "msilva",
+    "username": "marcosilva1",
     "email": "marcosilva2203@outlook.pt",
     "password": "abc123"
+}
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users
+Accept: application/json
+Content-Type: application/json
+
+{
+    "username": "marcosilva2",
+    "email": "marcosilva2203@outlook.pt",
+    "password": "abc123"
+}
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/1/profile-posts
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/1/profile-posts?page=2&pageSize=20
+Accept: application/json
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/43/profile-posts
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "content": "This is a profile post!"
 }
 
 ###

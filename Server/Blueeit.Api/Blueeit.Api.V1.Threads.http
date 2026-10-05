@@ -25,7 +25,8 @@ Content-Type: application/json
 {
     "authorId": 1,
     "forumId": 1,
-    "title": "Bad Matchmaking"
+    "title": "Bad Matchmaking",
+    "content": "Welcome to the new thread!"
 }
 
 ###
@@ -37,7 +38,8 @@ Content-Type: application/json
 {
     "authorId": 1,
     "forumId": 2,
-    "title": "Stuck in the level geometry"
+    "title": "Stuck in the level geometry",
+    "content": "Welcome to the new thread!"
 }
 
 ###
