@@ -9,6 +9,10 @@ public interface IPostService
 
     Task<int> GetCountAsync();
 
+    int GetCountByAuthorId(int authorId);
+
+    int GetCountByThreadIds(IEnumerable<int> threadIds);
+
     Task<PaginatedResult<Post>> GetAllPostsAsync(int page, int pageSize);
 
     Task<PaginatedResult<Post>> GetPostsByThreadId(int threadId, int page, int pageSize);
@@ -33,6 +37,18 @@ public class InMemoryPostService : IPostService
     {
         var count = _posts.Count();
         return Task.FromResult(count);
+    }
+
+    public int GetCountByAuthorId(int authorId)
+    {
+        return _posts.Count(post => post.AuthorId == authorId);
+    }
+
+    public int GetCountByThreadIds(IEnumerable<int> threadIds)
+    {
+        var ids = threadIds.ToHashSet();
+
+        return _posts.Count(post => ids.Contains(post.ThreadId));
     }
 
     public Task<PaginatedResult<Post>> GetAllPostsAsync(int page, int pageSize)

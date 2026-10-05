@@ -1,54 +1,103 @@
 using Blueeit.Api.Models;
 using Blueeit.Api.Common.Pagination;
+using Blueeit.Api.DTOs.Forum;
+using Blueeit.Api.Mappings;
 
 namespace Blueeit.Api.Services;
 
 public interface IForumService
 {
-    Task<Forum?> GetForumByIdAsync(int id);
+    Task<ForumResponse?> GetForumByIdAsync(int id);
 
     Task<int> GetCountAsync();
 
-    Task<PaginatedResult<Forum>> GetAllForumsAsync(int page, int pageSize);
+    int GetThreadCount(int id);
 
-    Task<PaginatedResult<Forum>> GetRootForumsAsync(int page, int pageSize);
+    int GetPostCount(int id);
 
-    Task<PaginatedResult<Forum>> GetSubforumsAsync(int id, int page, int pageSize);
+    Task<PaginatedResult<ForumResponse>> GetAllForumsAsync(int page, int pageSize);
 
-    Task<Forum> CreateForumAsync(int? parentId, int authorId, string title);
+    Task<PaginatedResult<ForumResponse>> GetRootForumsAsync(int page, int pageSize);
+
+    Task<PaginatedResult<ForumResponse>> GetSubforumsAsync(int id, int page, int pageSize);
+
+    Task<ForumResponse> CreateForumAsync(int? parentId, int authorId, string title);
 
     Task<bool> DeleteForumAsync(int id);
 }
 
 public class InMemoryForumService : IForumService
 {
+    private readonly IForumThreadService _threadService;
+    private readonly IPostService _postService;
     private readonly List<Forum> _forums = [];
     private int _nextId = 1;
 
-    public Task<Forum?> GetForumByIdAsync(int id)
+    public InMemoryForumService(
+        IForumThreadService threadService,
+        IPostService postService)
+    {
+        _threadService = threadService;
+        _postService = postService;
+    }
+
+    private ForumMetadata GetForumMetadata(Forum forum)
+    {
+        return new ForumMetadata
+        {
+            ThreadCount = GetThreadCount(forum.Id),
+            PostCount  = GetPostCount(forum.Id)
+        };
+    }
+
+    public Task<ForumResponse?> GetForumByIdAsync(int id)
     {
         Forum? forum = _forums.FirstOrDefault(forum => forum.Id == id);
-        return Task.FromResult(forum);
+
+        if (forum is null)
+        {
+            return Task.FromResult<ForumResponse?>(null);
+        }
+
+        var response = forum.ToResponse(GetForumMetadata(forum));
+
+        return Task.FromResult<ForumResponse?>(response);
     }
 
     public Task<int> GetCountAsync()
     {
-        var count = _forums.Count();
-        return Task.FromResult(count);
+        return Task.FromResult(_forums.Count());
     }
 
-    public Task<PaginatedResult<Forum>> GetAllForumsAsync(int page, int pageSize)
+    public int GetThreadCount(int id)
     {
+        return _threadService.GetCountByForumId(id);
+    }
+
+    public int GetPostCount(int id)
+    {
+        var threadIds = _threadService
+            .GetThreadsByForumId(id)
+            .Select(thread => thread.Id);
+
+        return _postService.GetCountByThreadIds(threadIds);
+    }
+
+    public Task<PaginatedResult<ForumResponse>> GetAllForumsAsync(int page, int pageSize)
+    {
+        var forums = _forums
+            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
+
         int totalCount = _forums.Count();
 
-        IReadOnlyList<Forum> forums = _forums
+        var items = forums
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<Forum>
+        var result = new PaginatedResult<ForumResponse>
         {
-            Items = forums,
+            Items = items,
             Page = page,
             PageSize = pageSize,
             TotalCount = totalCount
@@ -57,10 +106,11 @@ public class InMemoryForumService : IForumService
         return Task.FromResult(result);
     }
 
-    public Task<PaginatedResult<Forum>> GetRootForumsAsync(int page, int pageSize)
+    public Task<PaginatedResult<ForumResponse>> GetRootForumsAsync(int page, int pageSize)
     {
         var forums = _forums
-            .Where(forum => forum.ParentId == null);
+            .Where(forum => forum.ParentId == null)
+            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
 
         var totalCount = forums.Count();
 
@@ -69,7 +119,7 @@ public class InMemoryForumService : IForumService
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<Forum>
+        var result = new PaginatedResult<ForumResponse>
         {
             Items = items,
             Page = page,
@@ -80,10 +130,11 @@ public class InMemoryForumService : IForumService
         return Task.FromResult(result);
     }
 
-    public Task<PaginatedResult<Forum>> GetSubforumsAsync(int id, int page, int pageSize)
+    public Task<PaginatedResult<ForumResponse>> GetSubforumsAsync(int id, int page, int pageSize)
     {
         var subforums = _forums
-            .Where(forum => forum.ParentId == id);
+            .Where(forum => forum.ParentId == id)
+            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
 
         int totalCount = subforums.Count();
 
@@ -92,7 +143,7 @@ public class InMemoryForumService : IForumService
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<Forum>
+        var result = new PaginatedResult<ForumResponse>
         {
             Items = items,
             Page = page,
@@ -103,11 +154,11 @@ public class InMemoryForumService : IForumService
         return Task.FromResult(result);
     }
 
-    public Task<Forum> CreateForumAsync(int? parentId, int authorId, string title)
+    public Task<ForumResponse> CreateForumAsync(int? parentId, int authorId, string title)
     {
         var forum = new Forum
         {
-            Id = _nextId,
+            Id = _nextId++,
             ParentId = parentId,
             AuthorId = authorId,
             CreationDate = DateTime.Now,
@@ -115,9 +166,10 @@ public class InMemoryForumService : IForumService
         };
 
         _forums.Add(forum);
-        _nextId++;
 
-        return Task.FromResult(forum);
+        var result = forum.ToResponse(new ForumMetadata());
+
+        return Task.FromResult(result);
     }
 
     public Task<bool> DeleteForumAsync(int id)

@@ -9,19 +9,31 @@ public interface IForumThreadService
 
     Task<int> GetCountAsync();
 
+    int GetCountByForumId(int forumId);
+
     Task<PaginatedResult<ForumThread>> GetAllThreadsAsync(int page, int pageSize);
 
     Task<PaginatedResult<ForumThread>> GetThreadsByForumIdAsync(int forumId, int page, int pageSize);
 
-    Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title);
+    IEnumerable<ForumThread> GetThreadsByForumId(int forumId);
+
+    bool BelongsToForum(int threadId, int forumId);
+
+    Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title, string content);
 
     Task<bool> DeleteThreadAsync(int id);
 }
 
 public class InMemoryForumThreadService : IForumThreadService
 {
+    private readonly IPostService _postService;
     private readonly List<ForumThread> _threads = [];
     private int _nextId = 1;
+
+    public InMemoryForumThreadService(IPostService postService)
+    {
+        _postService = postService;
+    }
 
     public Task<ForumThread?> GetThreadByIdAsync(int id)
     {
@@ -33,6 +45,12 @@ public class InMemoryForumThreadService : IForumThreadService
     {
         var count = _threads.Count();
         return Task.FromResult(count);
+    }
+
+    public int GetCountByForumId(int forumId)
+    {
+        var count = _threads.Count(thread => thread.ForumId == forumId);
+        return count;
     }
 
     public Task<PaginatedResult<ForumThread>> GetAllThreadsAsync(int page, int pageSize)
@@ -78,7 +96,18 @@ public class InMemoryForumThreadService : IForumThreadService
         return Task.FromResult(result);
     }
 
-    public Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title)
+    public IEnumerable<ForumThread> GetThreadsByForumId(int forumId)
+    {
+        return _threads
+            .Where(thread => thread.ForumId == forumId);
+    }
+
+    public bool BelongsToForum(int threadId, int forumId)
+    {
+        return _threads.Any(thread => thread.Id == threadId && thread.ForumId == forumId);
+    }
+
+    public async Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title, string content)
     {
         var thread = new ForumThread
         {
@@ -92,7 +121,15 @@ public class InMemoryForumThreadService : IForumThreadService
         _threads.Add(thread);
         _nextId++;
 
-        return Task.FromResult(thread);
+        var post = await _postService.CreatePostAsync(
+            thread.Id,
+            thread.AuthorId,
+            content
+        );
+
+        thread.OpeningPostId = post.Id;
+
+        return thread;
     }
 
     public Task<bool> DeleteThreadAsync(int id)

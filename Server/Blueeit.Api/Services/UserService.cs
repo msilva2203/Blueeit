@@ -1,5 +1,8 @@
 using Blueeit.Api.Common.Pagination;
+using Blueeit.Api.DTOs.User;
+using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
+using Blueeit.Api.Queries.User;
 
 namespace Blueeit.Api.Services;
 
@@ -8,13 +11,15 @@ namespace Blueeit.Api.Services;
  */
 public interface IUserService
 {
-    Task<User?> GetUserByIdAsync(int id);
+    Task<UserResponse?> GetUserByIdAsync(int id);
+
+    Task<UserResponse?> GetLatestUser();
 
     Task<int> GetCountAsync();
 
-    Task<PaginatedResult<User>> GetAllUsersAsync(int page, int pageSize);
+    Task<PaginatedResult<UserResponse>> GetAllUsersAsync(UserQueryKey sortKey, int page, int pageSize);
 
-    Task<User> CreateUserAsync(string username, string email, string password);
+    Task<UserResponse> CreateUserAsync(string username, string email, string password);
 
     Task<bool> DeleteUserAsync(int id);
 }
@@ -24,33 +29,96 @@ public interface IUserService
  */
 public class InMemoryUserService : IUserService
 {
+    private readonly IPostService _postService;
+    private readonly IProfilePostService _profilePostService;
     private readonly List<User> _users = [];
     private int _nextId = 1;
 
-    public Task<User?> GetUserByIdAsync(int id)
+    public InMemoryUserService(
+        IPostService postService, 
+        IProfilePostService profilePostService)
+    {
+        _postService = postService;
+        _profilePostService = profilePostService;
+    }
+
+    private UserMetadata GetUserMetadata(User user)
+    {
+        return new UserMetadata
+        {
+            PostCount = _postService.GetCountByAuthorId(user.Id),
+            ProfilePostCount = _profilePostService.GetCountByAuthorId(user.Id)
+        };
+    }
+
+    public Task<UserResponse?> GetUserByIdAsync(int id)
     {
         User? user = _users.FirstOrDefault(user => user.Id == id);
-        return Task.FromResult(user);
+
+        if (user is null)
+        {
+            return Task.FromResult<UserResponse?>(null);
+        }
+
+        var result = user.ToResponse(GetUserMetadata(user));
+
+        return Task.FromResult<UserResponse?>(result);
+    }
+
+    public Task<UserResponse?> GetLatestUser()
+    {
+        User? user = _users
+            .OrderByDescending(user => user.CreationDate)
+            .FirstOrDefault();
+
+        if (user is null)
+        {
+            return Task.FromResult<UserResponse?>(null);
+        }
+
+        var result = user.ToResponse(GetUserMetadata(user));
+
+        return Task.FromResult<UserResponse?>(result);
     }
 
     public Task<int> GetCountAsync()
     {
-        var count = _users.Count();
-        return Task.FromResult(count);
+        return Task.FromResult(_users.Count());
     }
 
-    public Task<PaginatedResult<User>> GetAllUsersAsync(int page, int pageSize)
+    public Task<PaginatedResult<UserResponse>> GetAllUsersAsync(UserQueryKey sortKey, int page, int pageSize)
     {
-        int totalCount = _users.Count();
+        var users = _users
+            .Select(user => user.ToResponse(GetUserMetadata(user)));
 
-        IReadOnlyList<User> users = _users
+        int totalCount = users.Count();
+
+        users = sortKey switch
+        {
+            UserQueryKey.None => 
+                users,
+
+            UserQueryKey.Newest =>
+                users.OrderByDescending(user => user.CreationDate),
+
+            UserQueryKey.Oldest =>
+                users.OrderBy(user => user.CreationDate),
+
+            UserQueryKey.MostMessages =>
+                users.OrderByDescending(user =>
+                    user.Metadata.PostCount + user.Metadata.ProfilePostCount),
+
+            _ => users
+        };
+
+        var items = users
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<User>
+        var result = new PaginatedResult<UserResponse>
         {
-            Items = users,
+            Items = items,
             Page = page,
             PageSize = pageSize,
             TotalCount = totalCount
@@ -59,21 +127,22 @@ public class InMemoryUserService : IUserService
         return Task.FromResult(result);
     }
 
-    public Task<User> CreateUserAsync(string username, string email, string password)
+    public Task<UserResponse> CreateUserAsync(string username, string email, string password)
     {
         var user = new User
         {
-            Id = _nextId,
+            Id = _nextId++,
             Username = username,
             Email = email,
             Password = password,
-            Date = DateTime.Now
+            CreationDate = DateTime.UtcNow
         };
 
         _users.Add(user);
-        _nextId++;
 
-        return Task.FromResult(user);
+        var result = user.ToResponse(new UserMetadata());
+
+        return Task.FromResult(result);
     }
 
     public Task<bool> DeleteUserAsync(int id)

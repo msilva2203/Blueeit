@@ -1,4 +1,5 @@
 using Blueeit.Api.DTOs.Stats;
+using Blueeit.Api.Mappings;
 
 namespace Blueeit.Api.Services;
 
@@ -32,13 +33,15 @@ public class InMemoryStatsService : IStatsService
         var forumCount = await _forumService.GetCountAsync();
         var threadCount = await _threadService.GetCountAsync();
         var postCount = await _postService.GetCountAsync();
+        var latestUser = await _userService.GetLatestUser();
 
         var result = new StatsResponse
         {
             UserCount = userCount,
             ForumCount = forumCount,
             ThreadCount = threadCount,
-            PostCount = postCount
+            PostCount = postCount,
+            LatestUser = latestUser is not null ? latestUser : null
         };
 
         return result;
