@@ -7,4 +7,5 @@ public class ForumResponse
     public int AuthorId { get; set; }
     public DateTime CreationDate { get; set; }
     public required string Title { get; set; }
+    public ForumMetadata Metadata { get; set; } = new();
 }
