@@ -82,11 +82,11 @@ public class ForumThreadController : ControllerBase
     public async Task<ActionResult<ForumThreadResponse>> CreateThread(
         [FromBody] CreateForumThreadRequest request)
     {
-        var thread = await _threadService.CreateThreadAsync
-        (
+        var thread = await _threadService.CreateThreadAsync(
             request.AuthorId,
             request.ForumId,
-            request.Title
+            request.Title,
+            request.Content
         );
 
         var response = thread.ToResponse();

@@ -18,7 +18,9 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<PostResponse>>> GetAllPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<ActionResult<IReadOnlyList<PostResponse>>> GetAllPosts(
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 20)
     {
         var result = await _postService.GetAllPostsAsync(page, pageSize);
 
@@ -36,7 +38,8 @@ public class PostController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<PostResponse>> GetPostById(int id)
+    public async Task<ActionResult<PostResponse>> GetPostById(
+        [FromRoute] int id)
     {
         var post = await _postService.GetPostByIdAsync(id);
 
@@ -51,7 +54,8 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<PostResponse>> CreatePost(CreatePostRequest request)
+    public async Task<ActionResult<PostResponse>> CreatePost(
+        [FromBody] CreatePostRequest request)
     {
         var post = await _postService.CreatePostAsync
         (
@@ -66,7 +70,8 @@ public class PostController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeletePost(int id)
+    public async Task<IActionResult> DeletePost(
+        [FromRoute] int id)
     {
         bool result = await _postService.DeletePostAsync(id);
 

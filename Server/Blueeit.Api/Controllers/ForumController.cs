@@ -33,17 +33,7 @@ public class ForumController : ControllerBase
     {
         var result = await _forumService.GetRootForumsAsync(page, pageSize);
 
-        var responses = result.Items
-            .Select(forum => forum.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<ForumResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
     /// <summary>
@@ -61,19 +51,16 @@ public class ForumController : ControllerBase
     {
         var result = await _forumService.GetSubforumsAsync(id, page, pageSize);
 
-        var responses = result.Items
-            .Select(forum => forum.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<ForumResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
+    /// <summary>
+    /// Gets the threads belonging to a forum.
+    /// </summary>
+    /// <param name="id">The ID of the forum.</param>
+    /// <param name="page">The page number to retrieve.</param>
+    /// <param name="pageSize">The maximum number of threads to retrieve per page.</param>
+    /// <returns>A paginated collection of threads.</returns>
     [HttpGet("{id:int}/threads")]
     public async Task<ActionResult<PaginatedResult<ForumThreadResponse>>> GetThreads(
         [FromRoute] int id,
@@ -81,20 +68,15 @@ public class ForumController : ControllerBase
         [FromQuery] int pageSize = 20)
     {
         var result = await _threadService.GetThreadsByForumIdAsync(id, page, pageSize);
-
-        var responses = result.Items
-            .Select(thread => thread.ToResponse())
-            .ToList();
         
-        return Ok(new PaginatedResult<ForumThreadResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
+    /// <summary>
+    /// Gets the forum with a specific ID.
+    /// </summary>
+    /// <param name="id">The ID of the forum.</param>
+    /// <returns>The forum.</returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ForumResponse>> GetForum(
         [FromRoute] int id)
@@ -106,27 +88,32 @@ public class ForumController : ControllerBase
             return NotFound();
         }
 
-        var response = forum.ToResponse();
-
-        return Ok(response);
+        return Ok(forum);
     }
 
+    /// <summary>
+    /// Creates a new forum.
+    /// </summary>
+    /// <param name="request">The request body.</param>
+    /// <returns>The newly created forum.</returns>
     [HttpPost]
     public async Task<ActionResult<ForumResponse>> CreateForum(
         [FromBody] CreateForumRequest request)
     {
-        var forum = await _forumService.CreateForumAsync
-        (
+        var forum = await _forumService.CreateForumAsync(
             request.ParentId,
             request.AuthorId, 
             request.Title
         );
 
-        var response = forum.ToResponse();
-
-        return Ok(response);
+        return Ok(forum);
     }
 
+    /// <summary>
+    /// Deletes a forum.
+    /// </summary>
+    /// <param name="id">The ID of the forum.</param>
+    /// <returns>The result of the operation.</returns>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteForum(
         [FromRoute] int id)
