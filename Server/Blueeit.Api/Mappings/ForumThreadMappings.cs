@@ -12,6 +12,7 @@ public static class ForumThreadMappings
             Id = thread.Id,
             AuthorId = thread.AuthorId,
             ForumId = thread.ForumId,
+            OpeningPostId = thread.OpeningPostId,
             CreationDate = thread.CreationDate,
             Title = thread.Title
         };

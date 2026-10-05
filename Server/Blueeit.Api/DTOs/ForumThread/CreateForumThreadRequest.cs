@@ -5,4 +5,5 @@ public class CreateForumThreadRequest
     public int AuthorId { get; set; }
     public int? ForumId { get; set; }
     public required string Title { get; set; }
+    public required string Content { get; set; }
 }

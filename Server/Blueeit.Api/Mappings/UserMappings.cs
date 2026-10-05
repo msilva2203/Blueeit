@@ -5,13 +5,17 @@ namespace Blueeit.Api.Mappings;
 
 public static class UserMappings
 {
-    public static UserResponse ToResponse(this User user)
+    public static UserResponse ToResponse(
+        this User user, 
+        UserMetadata metadata)
     {
         return new UserResponse
         {
             Id = user.Id,
             Username = user.Username,
-            Email = user.Email
+            Email = user.Email,
+            CreationDate = user.CreationDate,
+            Metadata = metadata
         };
     }
 }
