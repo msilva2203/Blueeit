@@ -21,6 +21,7 @@ builder.Services.AddSingleton<IUserService, InMemoryUserService>();
 builder.Services.AddSingleton<IForumService, InMemoryForumService>();
 builder.Services.AddSingleton<IForumThreadService, InMemoryForumThreadService>();
 builder.Services.AddSingleton<IPostService, InMemoryPostService>();
+builder.Services.AddSingleton<IProfilePostService, InMemoryProfilePostService>();
 builder.Services.AddSingleton<IStatsService, InMemoryStatsService>();
 
 var app = builder.Build();
