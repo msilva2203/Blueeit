@@ -1,36 +1,28 @@
 using Blueeit.Api.Common.Pagination;
+using Blueeit.Api.DTOs.Post;
+using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
+using Blueeit.Api.Queries.Post;
 
 namespace Blueeit.Api.Services;
-
-public interface IPostService
-{
-    Task<Post?> GetPostByIdAsync(int id);
-
-    Task<int> GetCountAsync();
-
-    int GetCountByAuthorId(int authorId);
-
-    int GetCountByThreadIds(IEnumerable<int> threadIds);
-
-    Task<PaginatedResult<Post>> GetAllPostsAsync(int page, int pageSize);
-
-    Task<PaginatedResult<Post>> GetPostsByThreadId(int threadId, int page, int pageSize);
-
-    Task<Post> CreatePostAsync(int threadId, int authorId, string content);
-
-    Task<bool> DeletePostAsync(int id);
-}
 
 public class InMemoryPostService : IPostService
 {
     private readonly List<Post> _posts = [];
     private int _nextId = 1;
 
-    public Task<Post?> GetPostByIdAsync(int id)
+    public Task<PostResponse?> GetPostByIdAsync(int id)
     {
         Post? post = _posts.FirstOrDefault(post => post.Id == id);
-        return Task.FromResult(post);
+
+        if (post is null)
+        {
+            return Task.FromResult<PostResponse?>(null);
+        }
+
+        var response = post.ToResponse();
+
+        return Task.FromResult<PostResponse?>(response);
     }
 
     public Task<int> GetCountAsync()
@@ -51,39 +43,30 @@ public class InMemoryPostService : IPostService
         return _posts.Count(post => ids.Contains(post.ThreadId));
     }
 
-    public Task<PaginatedResult<Post>> GetAllPostsAsync(int page, int pageSize)
-    {
-        int totalCount = _posts.Count();
-
-        IReadOnlyList<Post> posts = _posts
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var result = new PaginatedResult<Post>
-        {
-            Items = posts,
-            Page = page,
-            PageSize = pageSize,
-            TotalCount = totalCount
-        };
-
-        return Task.FromResult(result);
-    }
-
-    public Task<PaginatedResult<Post>> GetPostsByThreadId(int threadId, int page, int pageSize)
+    public Task<PaginatedResult<PostResponse>> GetAllPostsAsync(PostQueryKey queryKey, int page, int pageSize)
     {
         var posts = _posts
-            .Where(post => post.ThreadId == threadId);
+            .Select(post => post.ToResponse());
 
-        var totalCount = posts.Count();
+        int totalCount = posts.Count();
+
+        posts = queryKey switch
+        {
+            PostQueryKey.None => 
+                posts,
+
+            PostQueryKey.Newest =>
+                posts.OrderByDescending(post => post.CreationDate),
+
+            _ => posts
+        };
 
         var items = posts
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<Post>
+        var result = new PaginatedResult<PostResponse>
         {
             Items = items,
             Page = page,
@@ -94,11 +77,46 @@ public class InMemoryPostService : IPostService
         return Task.FromResult(result);
     }
 
-    public Task<Post> CreatePostAsync(int threadId, int authorId, string content)
+    public Task<PaginatedResult<PostResponse>> GetPostsByThreadId(PostQueryKey queryKey, int threadId, int page, int pageSize)
+    {
+        var posts = _posts
+            .Where(post => post.ThreadId == threadId)
+            .Select(post => post.ToResponse());
+
+        var totalCount = posts.Count();
+
+        posts = queryKey switch
+        {
+            PostQueryKey.None =>
+                posts,
+
+            PostQueryKey.Newest =>
+                posts.OrderByDescending(post => post.CreationDate),
+
+            _ => posts
+        };
+
+        var items = posts
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var result = new PaginatedResult<PostResponse>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+
+        return Task.FromResult(result);
+    }
+
+    public Task<PostResponse> CreatePostAsync(int threadId, int authorId, string content)
     {
         var post = new Post
         {
-            Id = _nextId,
+            Id = _nextId++,
             ThreadId = threadId,
             AuthorId = authorId,
             CreationDate = DateTime.Now,
@@ -106,9 +124,10 @@ public class InMemoryPostService : IPostService
         };
 
         _posts.Add(post);
-        _nextId++;
 
-        return Task.FromResult(post);
+        var response = post.ToResponse();
+
+        return Task.FromResult(response);
     }
 
     public Task<bool> DeletePostAsync(int id)

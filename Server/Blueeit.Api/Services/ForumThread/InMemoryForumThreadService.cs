@@ -1,28 +1,9 @@
 using Blueeit.Api.Common.Pagination;
+using Blueeit.Api.DTOs.ForumThread;
+using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
 
 namespace Blueeit.Api.Services;
-
-public interface IForumThreadService
-{
-    Task<ForumThread?> GetThreadByIdAsync(int id);
-
-    Task<int> GetCountAsync();
-
-    int GetCountByForumId(int forumId);
-
-    Task<PaginatedResult<ForumThread>> GetAllThreadsAsync(int page, int pageSize);
-
-    Task<PaginatedResult<ForumThread>> GetThreadsByForumIdAsync(int forumId, int page, int pageSize);
-
-    IEnumerable<ForumThread> GetThreadsByForumId(int forumId);
-
-    bool BelongsToForum(int threadId, int forumId);
-
-    Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title, string content);
-
-    Task<bool> DeleteThreadAsync(int id);
-}
 
 public class InMemoryForumThreadService : IForumThreadService
 {
@@ -35,10 +16,18 @@ public class InMemoryForumThreadService : IForumThreadService
         _postService = postService;
     }
 
-    public Task<ForumThread?> GetThreadByIdAsync(int id)
+    public Task<ForumThreadResponse?> GetThreadByIdAsync(int id)
     {
         ForumThread? thread = _threads.FirstOrDefault(thread => thread.Id == id);
-        return Task.FromResult(thread);
+
+        if (thread is null)
+        {
+            return Task.FromResult<ForumThreadResponse?>(null);
+        }
+
+        var response = thread.ToResponse();
+
+        return Task.FromResult<ForumThreadResponse?>(response);
     }
 
     public Task<int> GetCountAsync()
@@ -53,30 +42,10 @@ public class InMemoryForumThreadService : IForumThreadService
         return count;
     }
 
-    public Task<PaginatedResult<ForumThread>> GetAllThreadsAsync(int page, int pageSize)
-    {
-        var totalCount = _threads.Count();
-
-        IReadOnlyList<ForumThread> threads = _threads
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var result = new PaginatedResult<ForumThread>
-        {
-            Items = threads,
-            Page = page,
-            PageSize = pageSize,
-            TotalCount = totalCount
-        };
-
-        return Task.FromResult(result);
-    }
-
-    public Task<PaginatedResult<ForumThread>> GetThreadsByForumIdAsync(int forumId, int page, int pageSize)
+    public Task<PaginatedResult<ForumThreadResponse>> GetAllThreadsAsync(int page, int pageSize)
     {
         var threads = _threads
-            .Where(thread => thread.ForumId == forumId);
+            .Select(thread => thread.ToResponse());
 
         var totalCount = threads.Count();
 
@@ -85,7 +54,31 @@ public class InMemoryForumThreadService : IForumThreadService
             .Take(pageSize)
             .ToList();
 
-        var result = new PaginatedResult<ForumThread>
+        var result = new PaginatedResult<ForumThreadResponse>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+
+        return Task.FromResult(result);
+    }
+
+    public Task<PaginatedResult<ForumThreadResponse>> GetThreadsByForumIdAsync(int forumId, int page, int pageSize)
+    {
+        var threads = _threads
+            .Where(thread => thread.ForumId == forumId)
+            .Select(thread => thread.ToResponse());
+
+        var totalCount = threads.Count();
+
+        var items = threads
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var result = new PaginatedResult<ForumThreadResponse>
         {
             Items = items,
             Page = page,
@@ -107,11 +100,11 @@ public class InMemoryForumThreadService : IForumThreadService
         return _threads.Any(thread => thread.Id == threadId && thread.ForumId == forumId);
     }
 
-    public async Task<ForumThread> CreateThreadAsync(int authorId, int? forumId, string title, string content)
+    public async Task<ForumThreadResponse> CreateThreadAsync(int forumId, int authorId, string title, string content)
     {
         var thread = new ForumThread
         {
-            Id = _nextId,
+            Id = _nextId++,
             AuthorId = authorId,
             ForumId = forumId,
             CreationDate = DateTime.Now,
@@ -119,7 +112,6 @@ public class InMemoryForumThreadService : IForumThreadService
         };
 
         _threads.Add(thread);
-        _nextId++;
 
         var post = await _postService.CreatePostAsync(
             thread.Id,
@@ -129,7 +121,9 @@ public class InMemoryForumThreadService : IForumThreadService
 
         thread.OpeningPostId = post.Id;
 
-        return thread;
+        var response = thread.ToResponse();
+
+        return response;
     }
 
     public Task<bool> DeleteThreadAsync(int id)

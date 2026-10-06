@@ -3,11 +3,6 @@ using Blueeit.Api.Mappings;
 
 namespace Blueeit.Api.Services;
 
-public interface IStatsService
-{
-    Task<StatsResponse> GetStatsAsync();
-}
-
 public class InMemoryStatsService : IStatsService
 {
     private readonly IUserService _userService;
