@@ -1,6 +1,7 @@
 using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.DTOs.Post;
 using Blueeit.Api.Mappings;
+using Blueeit.Api.Queries.Post;
 using Blueeit.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,54 +20,31 @@ public class PostController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<PostResponse>>> GetAllPosts(
+        [FromQuery] PostQueryKey key = PostQueryKey.None,
         [FromQuery] int page = 1, 
         [FromQuery] int pageSize = 20)
     {
-        var result = await _postService.GetAllPostsAsync(page, pageSize);
+        var result = await _postService.GetAllPostsAsync(
+            key,
+            page,
+            pageSize
+        );
 
-        var responses = result.Items
-            .Select(post => post.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<PostResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PostResponse>> GetPostById(
         [FromRoute] int id)
     {
-        var post = await _postService.GetPostByIdAsync(id);
+        var result = await _postService.GetPostByIdAsync(id);
 
-        if (post is null)
+        if (result is null)
         {
             return NotFound();
         }
 
-        var response = post.ToResponse();
-
-        return Ok(response);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<PostResponse>> CreatePost(
-        [FromBody] CreatePostRequest request)
-    {
-        var post = await _postService.CreatePostAsync
-        (
-            request.ThreadId,
-            request.AuthorId,
-            request.Content
-        );
-
-        var response = post.ToResponse();
-
-        return Ok(response);
+        return Ok(result);
     }
 
     [HttpDelete("{id:int}")]

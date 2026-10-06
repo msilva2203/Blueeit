@@ -14,7 +14,9 @@ public class ForumController : ControllerBase
     private IForumService _forumService;
     private IForumThreadService _threadService;
 
-    public ForumController(IForumService forumService, IForumThreadService threadService)
+    public ForumController(
+        IForumService forumService, 
+        IForumThreadService threadService)
     {
         _forumService = forumService;
         _threadService = threadService;
@@ -101,12 +103,53 @@ public class ForumController : ControllerBase
         [FromBody] CreateForumRequest request)
     {
         var forum = await _forumService.CreateForumAsync(
-            request.ParentId,
+            null,
             request.AuthorId, 
             request.Title
         );
 
         return Ok(forum);
+    }
+
+    /// <summary>
+    /// Creates a new subforum.
+    /// </summary>
+    /// <param name="id">The ID of the parent forum.</param>
+    /// <param name="request">The request body.</param>
+    /// <returns>The newly created subforum.</returns>
+    [HttpPost("{id:int}/subforums")]
+    public async Task<ActionResult<ForumResponse>> CreateSubforum(
+        [FromRoute] int id,
+        [FromBody] CreateForumRequest request)
+    {
+        var result = await _forumService.CreateForumAsync(
+            id,
+            request.AuthorId,
+            request.Title
+        );
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Creates a new thread belonging to a forum.
+    /// </summary>
+    /// <param name="id">The ID of the forum.</param>
+    /// <param name="request">The request body.</param>
+    /// <returns>The newly created thread.</returns>
+    [HttpPost("{id:int}/threads")]
+    public async Task<ActionResult<ForumThreadResponse>> CreateThread(
+        [FromRoute] int id,
+        [FromBody] CreateForumThreadRequest request)
+    {
+        var result = await _threadService.CreateThreadAsync(
+            id,
+            request.AuthorId,
+            request.Title,
+            request.Content
+        );
+
+        return Ok(result);
     }
 
     /// <summary>

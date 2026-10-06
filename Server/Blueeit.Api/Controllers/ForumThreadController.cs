@@ -3,6 +3,7 @@ using Blueeit.Api.DTOs.ForumThread;
 using Blueeit.Api.DTOs.Post;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
+using Blueeit.Api.Queries.Post;
 using Blueeit.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,9 @@ public class ForumThreadController : ControllerBase
     private IForumThreadService _threadService;
     private IPostService _postService;
 
-    public ForumThreadController(IForumThreadService threadService, IPostService postService)
+    public ForumThreadController(
+        IForumThreadService threadService,
+        IPostService postService)
     {
         _threadService = threadService;
         _postService = postService;
@@ -28,70 +31,52 @@ public class ForumThreadController : ControllerBase
     {
         var result = await _threadService.GetAllThreadsAsync(page, pageSize);
 
-        var responses = result.Items
-            .Select(thread => thread.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<ForumThreadResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
     [HttpGet("{id:int}/posts")]
     public async Task<ActionResult<PostResponse>> GetPosts(
         [FromRoute] int id,
+        [FromQuery] PostQueryKey key = PostQueryKey.None,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var result = await _postService.GetPostsByThreadId(id, page, pageSize);
+        var result = await _postService.GetPostsByThreadId(
+            key,
+            id,
+            page,
+            pageSize
+        );
 
-        var responses = result.Items
-            .Select(post => post.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<PostResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ForumThreadResponse>> GetThread(
         [FromRoute] int id)
     {
-        var thread = await _threadService.GetThreadByIdAsync(id);
+        var result = await _threadService.GetThreadByIdAsync(id);
 
-        if (thread is null)
+        if (result is null)
         {
             return NotFound();
         }
 
-        var response = thread.ToResponse();
-
-        return Ok(response);
+        return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<ForumThreadResponse>> CreateThread(
-        [FromBody] CreateForumThreadRequest request)
+    [HttpPost("{id:int}/posts")]
+    public async Task<ActionResult<PostResponse>> CreatePost(
+        [FromRoute] int id,
+        [FromBody] CreatePostRequest request)
     {
-        var thread = await _threadService.CreateThreadAsync(
+        var result = await _postService.CreatePostAsync(
+            id,
             request.AuthorId,
-            request.ForumId,
-            request.Title,
             request.Content
         );
 
-        var response = thread.ToResponse();
-
-        return Ok(response);
+        return Ok(result);
     }
 
     [HttpDelete("{id:int}")]
