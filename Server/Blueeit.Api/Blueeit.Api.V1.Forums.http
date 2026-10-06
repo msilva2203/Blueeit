@@ -33,19 +33,17 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "parentId": null,
     "authorId": 1,
     "title": "Bug Reports"
 }
 
 ###
 
-POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/subforums
 Accept: application/json
 Content-Type: application/json
 
 {
-    "parentId": 1,
     "authorId": 1,
     "title": "Gameplay Bug Reports"
 }
