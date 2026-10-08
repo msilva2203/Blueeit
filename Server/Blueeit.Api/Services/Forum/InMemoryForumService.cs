@@ -2,6 +2,7 @@ using Blueeit.Api.Models;
 using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.DTOs.Forum;
 using Blueeit.Api.Mappings;
+using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
@@ -9,15 +10,18 @@ public class InMemoryForumService : IForumService
 {
     private readonly IForumThreadService _threadService;
     private readonly IPostService _postService;
+    private readonly IUserActivityService _activityService;
     private readonly List<Forum> _forums = [];
     private int _nextId = 1;
 
     public InMemoryForumService(
         IForumThreadService threadService,
-        IPostService postService)
+        IPostService postService,
+        IUserActivityService activityService)
     {
         _threadService = threadService;
         _postService = postService;
+        _activityService = activityService;
     }
 
     private ForumMetadata GetForumMetadata(Forum forum)
@@ -133,7 +137,7 @@ public class InMemoryForumService : IForumService
         return Task.FromResult(result);
     }
 
-    public Task<ForumResponse> CreateForumAsync(int? parentId, int authorId, string title)
+    public async Task<ForumResponse> CreateForumAsync(int? parentId, int authorId, string title)
     {
         var forum = new Forum
         {
@@ -146,9 +150,17 @@ public class InMemoryForumService : IForumService
 
         _forums.Add(forum);
 
+        await _activityService.CreateAsync(
+            CreateUserActivityData.ForumCreated(
+                forum.AuthorId,
+                forum.CreationDate,
+                forum.Id
+            )
+        );
+
         var result = forum.ToResponse(new ForumMetadata());
 
-        return Task.FromResult(result);
+        return result;
     }
 
     public Task<bool> DeleteForumAsync(int id)

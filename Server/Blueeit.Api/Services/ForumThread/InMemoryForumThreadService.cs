@@ -2,18 +2,21 @@ using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.DTOs.ForumThread;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
+using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryForumThreadService : IForumThreadService
 {
     private readonly IPostService _postService;
+    private readonly IUserActivityService _activityService;
     private readonly List<ForumThread> _threads = [];
     private int _nextId = 1;
 
-    public InMemoryForumThreadService(IPostService postService)
+    public InMemoryForumThreadService(IPostService postService, IUserActivityService activityService)
     {
         _postService = postService;
+        _activityService = activityService;
     }
 
     public Task<ForumThreadResponse?> GetThreadByIdAsync(int id)
@@ -112,6 +115,15 @@ public class InMemoryForumThreadService : IForumThreadService
         };
 
         _threads.Add(thread);
+
+        await _activityService.CreateAsync(
+            CreateUserActivityData.ThreadCreated(
+                thread.AuthorId,
+                thread.CreationDate,
+                thread.ForumId,
+                thread.Id
+            )
+        );
 
         var post = await _postService.CreatePostAsync(
             thread.Id,

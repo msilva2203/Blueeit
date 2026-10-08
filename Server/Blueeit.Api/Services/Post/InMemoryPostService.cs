@@ -3,13 +3,20 @@ using Blueeit.Api.DTOs.Post;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
 using Blueeit.Api.Queries.Post;
+using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryPostService : IPostService
 {
+    private readonly IUserActivityService _activityService;
     private readonly List<Post> _posts = [];
     private int _nextId = 1;
+
+    public InMemoryPostService(IUserActivityService activityService)
+    {
+        _activityService = activityService;
+    }
 
     public Task<PostResponse?> GetPostByIdAsync(int id)
     {
@@ -112,7 +119,7 @@ public class InMemoryPostService : IPostService
         return Task.FromResult(result);
     }
 
-    public Task<PostResponse> CreatePostAsync(int threadId, int authorId, string content)
+    public async Task<PostResponse> CreatePostAsync(int threadId, int authorId, string content)
     {
         var post = new Post
         {
@@ -125,9 +132,18 @@ public class InMemoryPostService : IPostService
 
         _posts.Add(post);
 
+        await _activityService.CreateAsync(
+            CreateUserActivityData.PostCreated(
+                post.AuthorId,
+                post.CreationDate,
+                post.ThreadId,
+                post.Id
+            )
+        );
+
         var response = post.ToResponse();
 
-        return Task.FromResult(response);
+        return response;
     }
 
     public Task<bool> DeletePostAsync(int id)
