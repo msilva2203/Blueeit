@@ -1,11 +1,10 @@
+using System.Text.Json.Serialization;
 using Blueeit.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var clientUrl = builder.Configuration.GetValue<string>("Blueeit:ClientUrl")
     ?? throw new InvalidOperationException("Blueeit:ClientUrl is not configured.");
-
-//builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
@@ -18,6 +17,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(jsonOptions =>
+	{
+		jsonOptions.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
+
+builder.Services.AddSingleton<IUserActivityService, InMemoryUserActivityService>();
 builder.Services.AddSingleton<IUserService, InMemoryUserService>();
 builder.Services.AddSingleton<IForumService, InMemoryForumService>();
 builder.Services.AddSingleton<IForumThreadService, InMemoryForumThreadService>();
@@ -25,13 +31,18 @@ builder.Services.AddSingleton<IPostService, InMemoryPostService>();
 builder.Services.AddSingleton<IProfilePostService, InMemoryProfilePostService>();
 builder.Services.AddSingleton<IStatsService, InMemoryStatsService>();
 
-builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
+    app.MapOpenApi();
+
+    app.UseSwaggerUi(options =>
+    {
+        options.DocumentPath = "/openapi/v1.json";
+    });
 }
 
 //app.UseHttpsRedirection();
