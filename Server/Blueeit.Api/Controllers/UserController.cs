@@ -5,6 +5,8 @@ using Blueeit.Api.Mappings;
 using Microsoft.AspNetCore.Mvc;
 using Blueeit.Api.DTOs.ProfilePost;
 using Blueeit.Api.Queries.User;
+using Blueeit.Api.DTOs.UserActivity;
+using Blueeit.Api.Queries.ProfilePost;
 
 namespace Blueeit.Api.Controllers;
 
@@ -14,13 +16,16 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IProfilePostService _profilePostService;
+    private readonly IUserActivityService _activityService;
 
     public UserController(
         IUserService userService, 
-        IProfilePostService profilePostService)
+        IProfilePostService profilePostService,
+        IUserActivityService activityService)
     {
         _userService = userService;
         _profilePostService = profilePostService;
+        _activityService = activityService;
     }
 
     /// <summary>
@@ -37,6 +42,21 @@ public class UserController : ControllerBase
         [FromQuery] int pageSize = 20)
     {
         var result = await _userService.GetAllUsersAsync(key, page, pageSize);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}/activity")]
+    public async Task<ActionResult<PaginatedResult<UserActivityResponse>>> GetActivity(
+        [FromRoute] int id,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
+    {
+        var result = await _activityService.GetAllByUserIdAsync(
+            id, 
+            page,
+            pageSize
+        );
 
         return Ok(result);
     }
@@ -107,22 +127,18 @@ public class UserController : ControllerBase
     [HttpGet("{id:int}/profile-posts")]
     public async Task<ActionResult<PaginatedResult<ProfilePostResponse>>> GetAllProfilePosts(
         [FromRoute] int id,
+        [FromQuery] ProfilePostQueryKey key = ProfilePostQueryKey.None,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var result = await _profilePostService.GetProfilePostsByUserIdAsync(id, page, pageSize);
+        var result = await _profilePostService.GetProfilePostsByUserIdAsync(
+            key,
+            id,
+            page,
+            pageSize
+        );
 
-        var responses = result.Items
-            .Select(profilePost => profilePost.ToResponse())
-            .ToList();
-
-        return Ok(new PaginatedResult<ProfilePostResponse>
-        {
-            Items = responses,
-            Page = result.Page,
-            PageSize = result.PageSize,
-            TotalCount = result.TotalCount
-        });
+        return Ok(result);
     }
 
     /// <summary>
@@ -142,8 +158,6 @@ public class UserController : ControllerBase
             request.Content
         );
 
-        var response = result.ToResponse();
-
-        return Ok(response);
+        return Ok(result);
     }
 }

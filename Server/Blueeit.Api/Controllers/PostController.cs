@@ -19,7 +19,7 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<PostResponse>>> GetAllPosts(
+    public async Task<ActionResult<PaginatedResult<PostResponse>>> GetAllPosts(
         [FromQuery] PostQueryKey key = PostQueryKey.None,
         [FromQuery] int page = 1, 
         [FromQuery] int pageSize = 20)
