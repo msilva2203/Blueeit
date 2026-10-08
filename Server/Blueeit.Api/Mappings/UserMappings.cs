@@ -18,4 +18,16 @@ public static class UserMappings
             Metadata = metadata
         };
     }
+
+    public static UserSummary ToSummary(
+        this User user)
+    {
+        return new UserSummary
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            CreatedAt = user.CreationDate
+        };
+    }
 }
