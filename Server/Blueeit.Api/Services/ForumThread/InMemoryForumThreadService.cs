@@ -110,7 +110,7 @@ public class InMemoryForumThreadService : IForumThreadService
             Id = _nextId++,
             AuthorId = authorId,
             ForumId = forumId,
-            CreationDate = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Title = title
         };
 
@@ -119,7 +119,7 @@ public class InMemoryForumThreadService : IForumThreadService
         await _activityService.CreateAsync(
             CreateUserActivityData.ThreadCreated(
                 thread.AuthorId,
-                thread.CreationDate,
+                thread.CreatedAt,
                 thread.ForumId,
                 thread.Id
             )

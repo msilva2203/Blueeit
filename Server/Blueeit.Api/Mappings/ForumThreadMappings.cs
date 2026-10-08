@@ -5,7 +5,8 @@ namespace Blueeit.Api.Mappings;
 
 public static class ForumThreadMappings
 {
-    public static ForumThreadResponse ToResponse(this ForumThread thread)
+    public static ForumThreadResponse ToResponse(
+        this ForumThread thread)
     {
         return new ForumThreadResponse
         {
@@ -13,7 +14,19 @@ public static class ForumThreadMappings
             AuthorId = thread.AuthorId,
             ForumId = thread.ForumId,
             OpeningPostId = thread.OpeningPostId,
-            CreationDate = thread.CreationDate,
+            CreatedAt = thread.CreatedAt,
+            Title = thread.Title
+        };
+    }
+
+    public static ForumThreadSummary ToSummary(
+        this ForumThread thread)
+    {
+        return new ForumThreadSummary
+        {
+            Id = thread.Id,
+            AuthorId = thread.AuthorId,
+            CreatedAt = thread.CreatedAt,
             Title = thread.Title
         };
     }

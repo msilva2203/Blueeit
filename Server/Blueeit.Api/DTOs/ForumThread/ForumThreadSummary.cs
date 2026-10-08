@@ -1,11 +1,9 @@
 namespace Blueeit.Api.DTOs.ForumThread;
 
-public class ForumThreadResponse
+public class ForumThreadSummary
 {
     public int Id { get; set; }
     public int AuthorId { get; set; }
-    public int ForumId { get; set; }
-    public int OpeningPostId { get; set; }
     public DateTime CreatedAt { get; set; }
     public required string Title { get; set; }
 }
