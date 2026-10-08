@@ -3,43 +3,43 @@ using Blueeit.Api.DTOs.ProfilePost;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
 using Blueeit.Api.Queries.ProfilePost;
+using Blueeit.Api.Repositories;
 using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryProfilePostService : IProfilePostService
 {
-    private readonly IUserActivityService _activityService;
-    private readonly List<ProfilePost> _profilePosts = [];
-    private int _nextId = 1;
+    private readonly IProfilePostRepository _profilePostRepository;
+    private readonly IUserActivityRepository _activityRepository;
 
-    public InMemoryProfilePostService(IUserActivityService activityService)
+    public InMemoryProfilePostService(
+        IProfilePostRepository profilePostRepository,
+        IUserActivityRepository activityRepository)
     {
-        _activityService = activityService;
+        _profilePostRepository = profilePostRepository;
+        _activityRepository = activityRepository;
     }
 
-    public Task<ProfilePostResponse?> GetProfilePostByIdAsync(int id)
+    public async Task<ProfilePostResponse?> GetProfilePostByIdAsync(int id)
     {
-        ProfilePost? profilePost = _profilePosts.FirstOrDefault(profilePost => profilePost.Id == id);
+        ProfilePost? profilePost = await _profilePostRepository.GetByIdAsync(id);
 
         if (profilePost is null)
         {
-            return Task.FromResult<ProfilePostResponse?>(null);
+            return null;
         }
 
         var result = profilePost.ToResponse();
 
-        return Task.FromResult<ProfilePostResponse?>(result);
+        return result;
     }
 
-    public int GetCountByAuthorId(int authorId)
+    public async Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsAsync(ProfilePostQueryKey queryKey, int page, int pageSize)
     {
-        return _profilePosts.Count(profilePost => profilePost.AuthorId == authorId);
-    }
+        var all = await _profilePostRepository.GetAllAsync();
 
-    public Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsAsync(ProfilePostQueryKey queryKey, int page, int pageSize)
-    {
-        var profilePosts = _profilePosts
+        var profilePosts = all
             .Select(profilePost => profilePost.ToResponse());
 
         var totalCount = profilePosts.Count();
@@ -68,12 +68,14 @@ public class InMemoryProfilePostService : IProfilePostService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsByUserIdAsync(ProfilePostQueryKey queryKey, int userId, int page, int pageSize)
+    public async Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsByUserIdAsync(ProfilePostQueryKey queryKey, int userId, int page, int pageSize)
     {
-        var profilePosts = _profilePosts
+        var all = await _profilePostRepository.GetAllAsync();
+
+        var profilePosts = all
             .Where(profilePost => profilePost.UserId == userId)
             .Select(profilePost => profilePost.ToResponse());
 
@@ -103,12 +105,14 @@ public class InMemoryProfilePostService : IProfilePostService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsByAuthorIdAsync(ProfilePostQueryKey queryKey, int authorId, int page, int pageSize)
+    public async Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsByAuthorIdAsync(ProfilePostQueryKey queryKey, int authorId, int page, int pageSize)
     {
-        var profilePosts = _profilePosts
+        var all = await _profilePostRepository.GetAllAsync();
+
+        var profilePosts = all
             .Where(profilePost => profilePost.AuthorId == authorId)
             .Select(profilePost => profilePost.ToResponse());
 
@@ -138,23 +142,18 @@ public class InMemoryProfilePostService : IProfilePostService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
     public async Task<ProfilePostResponse> CreateProfilePostAsync(int userId, int authorId, string content)
     {
-        var profilePost = new ProfilePost
-        {
-            Id = _nextId++,
-            UserId = userId,
-            AuthorId = authorId,
-            CreatedAt = DateTime.UtcNow,
-            Content = content
-        };
-
-        _profilePosts.Add(profilePost);
+        var profilePost = await _profilePostRepository.CreateAsync(
+            userId,
+            authorId,
+            content
+        );
         
-        await _activityService.CreateAsync(
+        var activity = await _activityRepository.CreateAsync(
             CreateUserActivityData.ProfilePostCreated(
                 profilePost.AuthorId,
                 profilePost.CreatedAt,
@@ -168,17 +167,8 @@ public class InMemoryProfilePostService : IProfilePostService
         return result;
     }
 
-    public Task<bool> DeleteProfilePostAsync(int id)
+    public async Task<bool> DeleteProfilePostAsync(int id)
     {
-        ProfilePost? profilePost = _profilePosts.FirstOrDefault(profilePost => profilePost.Id == id);
-
-        if (profilePost is null)
-        {
-            return Task.FromResult(false);
-        }
-
-        var result = _profilePosts.Remove(profilePost);
-
-        return Task.FromResult(result);
+        return await _profilePostRepository.DeleteByIdAsync(id);
     }
 }

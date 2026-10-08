@@ -10,10 +10,6 @@ public interface IUserService
 {
     Task<UserResponse?> GetUserByIdAsync(int id);
 
-    Task<UserResponse?> GetLatestUser();
-
-    Task<int> GetCountAsync();
-
     Task<PaginatedResult<UserResponse>> GetAllUsersAsync(UserQueryKey sortKey, int page, int pageSize);
 
     Task<UserResponse> CreateUserAsync(string username, string email, string password);

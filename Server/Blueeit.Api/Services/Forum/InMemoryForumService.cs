@@ -3,25 +3,34 @@ using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.DTOs.Forum;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Services.Data;
+using Blueeit.Api.Repositories;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryForumService : IForumService
 {
-    private readonly IForumThreadService _threadService;
-    private readonly IPostService _postService;
-    private readonly IUserActivityService _activityService;
-    private readonly List<Forum> _forums = [];
-    private int _nextId = 1;
+    private readonly IForumRepository _forumRepository;
+    private readonly IForumThreadRepository _threadRepository;
+    private readonly IUserActivityRepository _activityRepository;
 
     public InMemoryForumService(
-        IForumThreadService threadService,
-        IPostService postService,
-        IUserActivityService activityService)
+        IForumRepository forumRepository,
+        IForumThreadRepository threadRepository,
+        IUserActivityRepository activityRepository)
     {
-        _threadService = threadService;
-        _postService = postService;
-        _activityService = activityService;
+        _forumRepository = forumRepository;
+        _threadRepository = threadRepository;
+        _activityRepository = activityRepository;
+    }
+
+    private int GetThreadCount(int id)
+    {
+        return 0;
+    }
+
+    private int GetPostCount(int id)
+    {
+        return 0;
     }
 
     private ForumMetadata GetForumMetadata(Forum forum)
@@ -33,45 +42,28 @@ public class InMemoryForumService : IForumService
         };
     }
 
-    public Task<ForumResponse?> GetForumByIdAsync(int id)
+    public async Task<ForumResponse?> GetForumByIdAsync(int id)
     {
-        Forum? forum = _forums.FirstOrDefault(forum => forum.Id == id);
+        Forum? forum = await _forumRepository.GetByIdAsync(id);
 
         if (forum is null)
         {
-            return Task.FromResult<ForumResponse?>(null);
+            return null;
         }
 
         var response = forum.ToResponse(GetForumMetadata(forum));
 
-        return Task.FromResult<ForumResponse?>(response);
+        return response;
     }
 
-    public Task<int> GetCountAsync()
+    public async Task<PaginatedResult<ForumResponse>> GetAllForumsAsync(int page, int pageSize)
     {
-        return Task.FromResult(_forums.Count());
-    }
+        var all = await _forumRepository.GetAllAsync();
 
-    public int GetThreadCount(int id)
-    {
-        return _threadService.GetCountByForumId(id);
-    }
-
-    public int GetPostCount(int id)
-    {
-        var threadIds = _threadService
-            .GetThreadsByForumId(id)
-            .Select(thread => thread.Id);
-
-        return _postService.GetCountByThreadIds(threadIds);
-    }
-
-    public Task<PaginatedResult<ForumResponse>> GetAllForumsAsync(int page, int pageSize)
-    {
-        var forums = _forums
+        var forums = all
             .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
 
-        int totalCount = _forums.Count();
+        int totalCount = forums.Count();
 
         var items = forums
             .Skip((page - 1) * pageSize)
@@ -86,12 +78,14 @@ public class InMemoryForumService : IForumService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<ForumResponse>> GetRootForumsAsync(int page, int pageSize)
+    public async Task<PaginatedResult<ForumResponse>> GetRootForumsAsync(int page, int pageSize)
     {
-        var forums = _forums
+        var all = await _forumRepository.GetAllAsync();
+
+        var forums = all
             .Where(forum => forum.ParentId == null)
             .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
 
@@ -110,12 +104,14 @@ public class InMemoryForumService : IForumService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<ForumResponse>> GetSubforumsAsync(int id, int page, int pageSize)
+    public async Task<PaginatedResult<ForumResponse>> GetSubforumsAsync(int id, int page, int pageSize)
     {
-        var subforums = _forums
+        var all = await _forumRepository.GetAllAsync();
+
+        var subforums = all
             .Where(forum => forum.ParentId == id)
             .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
 
@@ -134,23 +130,18 @@ public class InMemoryForumService : IForumService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
     public async Task<ForumResponse> CreateForumAsync(int? parentId, int authorId, string title)
     {
-        var forum = new Forum
-        {
-            Id = _nextId++,
-            ParentId = parentId,
-            AuthorId = authorId,
-            CreatedAt = DateTime.UtcNow,
-            Title = title
-        };
+        var forum = await _forumRepository.CreateAsync(
+            parentId,
+            authorId,
+            title
+        );
 
-        _forums.Add(forum);
-
-        await _activityService.CreateAsync(
+        var activity = await _activityRepository.CreateAsync(
             CreateUserActivityData.ForumCreated(
                 forum.AuthorId,
                 forum.CreatedAt,
@@ -163,17 +154,8 @@ public class InMemoryForumService : IForumService
         return result;
     }
 
-    public Task<bool> DeleteForumAsync(int id)
+    public async Task<bool> DeleteForumAsync(int id)
     {
-        Forum? forum = _forums.FirstOrDefault(forum => forum.Id == id);
-
-        if (forum is null)
-        {
-            return Task.FromResult(false);
-        }
-
-        var result = _forums.Remove(forum);
-
-        return Task.FromResult(result);
+        return await _forumRepository.DeleteByIdAsync(id);
     }
 }

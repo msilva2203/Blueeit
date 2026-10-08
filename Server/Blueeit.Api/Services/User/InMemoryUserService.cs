@@ -3,71 +3,47 @@ using Blueeit.Api.DTOs.User;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
 using Blueeit.Api.Queries.User;
+using Blueeit.Api.Repositories;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryUserService : IUserService
 {
-    private readonly IPostService _postService;
-    private readonly IProfilePostService _profilePostService;
-    private readonly List<User> _users = [];
-    private int _nextId = 1;
+    private readonly IUserRepository _userRepository;
 
     public InMemoryUserService(
-        IPostService postService, 
-        IProfilePostService profilePostService)
+        IUserRepository userRepository)
     {
-        _postService = postService;
-        _profilePostService = profilePostService;
+        _userRepository = userRepository;
     }
 
     private UserMetadata GetUserMetadata(User user)
     {
         return new UserMetadata
         {
-            PostCount = _postService.GetCountByAuthorId(user.Id),
-            ProfilePostCount = _profilePostService.GetCountByAuthorId(user.Id)
+            
         };
     }
 
-    public Task<UserResponse?> GetUserByIdAsync(int id)
+    public async Task<UserResponse?> GetUserByIdAsync(int id)
     {
-        User? user = _users.FirstOrDefault(user => user.Id == id);
+        User? user = await _userRepository.GetByIdAsync(id);
 
         if (user is null)
         {
-            return Task.FromResult<UserResponse?>(null);
+            return null;
         }
 
         var result = user.ToResponse(GetUserMetadata(user));
 
-        return Task.FromResult<UserResponse?>(result);
+        return result;
     }
 
-    public Task<UserResponse?> GetLatestUser()
+    public async Task<PaginatedResult<UserResponse>> GetAllUsersAsync(UserQueryKey sortKey, int page, int pageSize)
     {
-        User? user = _users
-            .OrderByDescending(user => user.CreatedAt)
-            .FirstOrDefault();
+        var all = await _userRepository.GetAllAsync();
 
-        if (user is null)
-        {
-            return Task.FromResult<UserResponse?>(null);
-        }
-
-        var result = user.ToResponse(GetUserMetadata(user));
-
-        return Task.FromResult<UserResponse?>(result);
-    }
-
-    public Task<int> GetCountAsync()
-    {
-        return Task.FromResult(_users.Count());
-    }
-
-    public Task<PaginatedResult<UserResponse>> GetAllUsersAsync(UserQueryKey sortKey, int page, int pageSize)
-    {
-        var users = _users
+        var users = all
             .Select(user => user.ToResponse(GetUserMetadata(user)));
 
         int totalCount = users.Count();
@@ -103,38 +79,24 @@ public class InMemoryUserService : IUserService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<UserResponse> CreateUserAsync(string username, string email, string password)
+    public async Task<UserResponse> CreateUserAsync(string username, string email, string password)
     {
-        var user = new User
-        {
-            Id = _nextId++,
-            Username = username,
-            Email = email,
-            Password = password,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _users.Add(user);
+        var user = await _userRepository.CreateAsync(
+            username,
+            email,
+            password
+        );
 
         var result = user.ToResponse(new UserMetadata());
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        User? user = _users.FirstOrDefault(user => user.Id == id);
-
-        if (user is null)
-        {
-            return Task.FromResult(false);
-        }
-
-        var result = _users.Remove(user);
-
-        return Task.FromResult(result);
+        return await _userRepository.DeleteByIdAsync(id);
     }
 }

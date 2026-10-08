@@ -9,12 +9,6 @@ public interface IPostService
 {
     Task<PostResponse?> GetPostByIdAsync(int id);
 
-    Task<int> GetCountAsync();
-
-    int GetCountByAuthorId(int authorId);
-
-    int GetCountByThreadIds(IEnumerable<int> threadIds);
-
     Task<PaginatedResult<PostResponse>> GetAllPostsAsync(PostQueryKey queryKey, int page, int pageSize);
 
     Task<PaginatedResult<PostResponse>> GetPostsByThreadId(PostQueryKey queryKey, int threadId, int page, int pageSize);

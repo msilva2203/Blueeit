@@ -2,32 +2,40 @@ using Blueeit.Api.Common.Pagination;
 using Blueeit.Api.DTOs.UserActivity;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
+using Blueeit.Api.Repositories;
 using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryUserActivityService : IUserActivityService
 {
-    private readonly List<UserActivity> _activities = [];
-    private int _nextId = 1;
+    private readonly IUserActivityRepository _activityRepository;
 
-    public Task<UserActivityResponse?> GetByIdAsync(int id)
+    public InMemoryUserActivityService(
+        IUserActivityRepository activityRepository)
     {
-        UserActivity? activity = _activities.FirstOrDefault(activity => activity.Id == id);
+        _activityRepository = activityRepository;
+    }
+
+    public async Task<UserActivityResponse?> GetByIdAsync(int id)
+    {
+        UserActivity? activity = await _activityRepository.GetByIdAsync(id);
 
         if (activity is null)
         {
-            return Task.FromResult<UserActivityResponse?>(null);
+            return null;
         }
 
-        var response = activity.ToResponse();
+        var result = activity.ToResponse();
 
-        return Task.FromResult<UserActivityResponse?>(response);
+        return result;
     }
 
-    public Task<PaginatedResult<UserActivityResponse>> GetAllAsync(int page, int pageSize)
+    public async Task<PaginatedResult<UserActivityResponse>> GetAllAsync(int page, int pageSize)
     {
-        var activities = _activities
+        var all = await _activityRepository.GetAllAsync();
+
+        var activities = all
             .Select(activity => activity.ToResponse());
 
         var totalCount = activities.Count();
@@ -45,12 +53,14 @@ public class InMemoryUserActivityService : IUserActivityService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<UserActivityResponse>> GetAllByUserIdAsync(int userId, int page, int pageSize)
+    public async Task<PaginatedResult<UserActivityResponse>> GetAllByUserIdAsync(int userId, int page, int pageSize)
     {
-        var activities = _activities
+        var all = await _activityRepository.GetAllAsync();
+
+        var activities = all
             .Where(activity => activity.UserId == userId)
             .Select(activity => activity.ToResponse());
 
@@ -69,42 +79,20 @@ public class InMemoryUserActivityService : IUserActivityService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<UserActivityResponse> CreateAsync(CreateUserActivityData data)
+    public async Task<UserActivityResponse> CreateAsync(CreateUserActivityData data)
     {
-        var activity = new UserActivity
-        {
-            Id = _nextId++,
-            UserId = data.UserId,
-            Type = data.Type,
-            CreatedAt = data.CreatedAt,
-            ForumId = data.ForumId,
-            ThreadId = data.ThreadId,
-            PostId = data.PostId,
-            ProfilePostId = data.ProfilePostId,
-            ProfileOwnerId = data.ProfileOwnerId
-        };
-
-        _activities.Add(activity);
+        var activity = await _activityRepository.CreateAsync(data);
 
         var result = activity.ToResponse();
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<bool> DeleteByIdAsync(int id)
+    public async Task<bool> DeleteByIdAsync(int id)
     {
-        UserActivity? activity = _activities.FirstOrDefault(activity => activity.Id == id);
-
-        if (activity is null)
-        {
-            return Task.FromResult(false);
-        }
-
-        var result = _activities.Remove(activity);
-
-        return Task.FromResult(result);
+        return await _activityRepository.DeleteByIdAsync(id);
     }
 }

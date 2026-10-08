@@ -1,59 +1,76 @@
 using Blueeit.Api.Common.Pagination;
+using Blueeit.Api.DTOs.ForumThread;
 using Blueeit.Api.DTOs.Post;
+using Blueeit.Api.DTOs.User;
 using Blueeit.Api.Mappings;
 using Blueeit.Api.Models;
 using Blueeit.Api.Queries.Post;
+using Blueeit.Api.Repositories;
 using Blueeit.Api.Services.Data;
 
 namespace Blueeit.Api.Services;
 
 public class InMemoryPostService : IPostService
 {
-    private readonly IUserActivityService _activityService;
-    private readonly List<Post> _posts = [];
-    private int _nextId = 1;
+    private readonly IPostRepository _postRepository;
+    private readonly IUserActivityRepository _activityRepository;
 
-    public InMemoryPostService(IUserActivityService activityService)
+    public InMemoryPostService(
+        IPostRepository postRepository,
+        IUserActivityRepository activityRepository)
     {
-        _activityService = activityService;
+        _postRepository = postRepository;
+        _activityRepository = activityRepository;
     }
 
-    public Task<PostResponse?> GetPostByIdAsync(int id)
+    private PostResponse GetPostResponse(Post post)
     {
-        Post? post = _posts.FirstOrDefault(post => post.Id == id);
+        var thread = new ForumThreadSummary
+        {
+            Title = ""
+        };
+
+        var author = new UserSummary
+        {
+            Username = "msilva",
+            Email = "pff"
+        };
+
+        return post.ToResponse(
+            thread,
+            author
+        );
+    }
+
+    public async Task<PostResponse?> GetPostByIdAsync(int id)
+    {
+        Post? post = await _postRepository.GetByIdAsync(id);
 
         if (post is null)
         {
-            return Task.FromResult<PostResponse?>(null);
+            return null;
         }
 
-        var response = post.ToResponse();
+        var result = GetPostResponse(post);
 
-        return Task.FromResult<PostResponse?>(response);
-    }
-
-    public Task<int> GetCountAsync()
-    {
-        var count = _posts.Count();
-        return Task.FromResult(count);
-    }
-
-    public int GetCountByAuthorId(int authorId)
-    {
-        return _posts.Count(post => post.AuthorId == authorId);
+        return result;
     }
 
     public int GetCountByThreadIds(IEnumerable<int> threadIds)
     {
         var ids = threadIds.ToHashSet();
 
-        return _posts.Count(post => ids.Contains(post.ThreadId));
+        var all = _postRepository.GetAll();
+
+        return all.Count(post => ids.Contains(post.ThreadId));
     }
 
-    public Task<PaginatedResult<PostResponse>> GetAllPostsAsync(PostQueryKey queryKey, int page, int pageSize)
+    public async Task<PaginatedResult<PostResponse>> GetAllPostsAsync(PostQueryKey queryKey, int page, int pageSize)
     {
-        var posts = _posts
-            .Select(post => post.ToResponse());
+        var all = await _postRepository.GetAllAsync();
+
+        var posts = all
+            .Select(post => GetPostResponse(post));
 
         int totalCount = posts.Count();
 
@@ -81,14 +98,16 @@ public class InMemoryPostService : IPostService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    public Task<PaginatedResult<PostResponse>> GetPostsByThreadId(PostQueryKey queryKey, int threadId, int page, int pageSize)
+    public async Task<PaginatedResult<PostResponse>> GetPostsByThreadId(PostQueryKey queryKey, int threadId, int page, int pageSize)
     {
-        var posts = _posts
+        var all = await _postRepository.GetAllAsync();
+
+        var posts = all
             .Where(post => post.ThreadId == threadId)
-            .Select(post => post.ToResponse());
+            .Select(post => GetPostResponse(post));
 
         var totalCount = posts.Count();
 
@@ -116,23 +135,18 @@ public class InMemoryPostService : IPostService
             TotalCount = totalCount
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
     public async Task<PostResponse> CreatePostAsync(int threadId, int authorId, string content)
     {
-        var post = new Post
-        {
-            Id = _nextId++,
-            ThreadId = threadId,
-            AuthorId = authorId,
-            CreatedAt = DateTime.UtcNow,
-            Content = content
-        };
+        var post = await _postRepository.CreateAsync(
+            threadId,
+            authorId,
+            content
+        );
 
-        _posts.Add(post);
-
-        await _activityService.CreateAsync(
+        var activity = await _activityRepository.CreateAsync(
             CreateUserActivityData.PostCreated(
                 post.AuthorId,
                 post.CreatedAt,
@@ -141,22 +155,13 @@ public class InMemoryPostService : IPostService
             )
         );
 
-        var response = post.ToResponse();
+        var response = GetPostResponse(post);
 
         return response;
     }
 
-    public Task<bool> DeletePostAsync(int id)
+    public async Task<bool> DeletePostAsync(int id)
     {
-        Post? post = _posts.FirstOrDefault(post => post.Id == id);
-
-        if (post is null)
-        {
-            return Task.FromResult(false);
-        }
-
-        bool result = _posts.Remove(post);
-
-        return Task.FromResult(result);
+        return await _postRepository.DeleteByIdAsync(id);
     }
 }

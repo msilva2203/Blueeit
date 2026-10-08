@@ -9,8 +9,6 @@ public interface IProfilePostService
 {
     Task<ProfilePostResponse?> GetProfilePostByIdAsync(int id);
 
-    int GetCountByAuthorId(int authorId);
-
     Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsAsync(ProfilePostQueryKey queryKey, int page, int pageSize);
 
     Task<PaginatedResult<ProfilePostResponse>> GetProfilePostsByUserIdAsync(ProfilePostQueryKey queryKey, int userId, int page, int pageSize);

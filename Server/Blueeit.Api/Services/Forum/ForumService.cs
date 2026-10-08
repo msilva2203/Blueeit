@@ -9,12 +9,6 @@ public interface IForumService
 {
     Task<ForumResponse?> GetForumByIdAsync(int id);
 
-    Task<int> GetCountAsync();
-
-    int GetThreadCount(int id);
-
-    int GetPostCount(int id);
-
     Task<PaginatedResult<ForumResponse>> GetAllForumsAsync(int page, int pageSize);
 
     Task<PaginatedResult<ForumResponse>> GetRootForumsAsync(int page, int pageSize);

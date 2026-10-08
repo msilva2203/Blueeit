@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Blueeit.Api.Repositories;
 using Blueeit.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,13 @@ builder.Services.AddControllers()
 	{
 		jsonOptions.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 	});
+
+builder.Services.AddSingleton<IForumRepository, InMemoryForumRepository>();
+builder.Services.AddSingleton<IForumThreadRepository, InMemoryForumThreadRepository>();
+builder.Services.AddSingleton<IPostRepository, InMemoryPostRepository>();
+builder.Services.AddSingleton<IProfilePostRepository, InMemoryProfilePostRepository>();
+builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
+builder.Services.AddSingleton<IUserActivityRepository, InMemoryUserActivityRepository>();
 
 builder.Services.AddSingleton<IUserActivityService, InMemoryUserActivityService>();
 builder.Services.AddSingleton<IUserService, InMemoryUserService>();
