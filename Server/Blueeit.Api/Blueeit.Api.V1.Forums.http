@@ -50,6 +50,30 @@ Content-Type: application/json
 
 ###
 
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/threads
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "title": "Bad Matchmaking",
+    "content": "Welcome to the new thread!"
+}
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/2/threads
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "title": "Stuck in the level geometry",
+    "content": "Welcome to the new thread!"
+}
+
+###
+
 DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1
 Accept: application/json
 

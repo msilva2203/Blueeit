@@ -1,0 +1,22 @@
+@BlueeitApi_HostAddress = http://localhost:5230
+@BlueeitApi_Version = v1
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/activity
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/activity?page=2&pageSize=20
+Accept: application/json
+
+###
+
+GET {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/activity/1
+Accept: application/json
+
+###
+
+DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/activity/1
+Accept: application/json

@@ -67,7 +67,7 @@ Accept: application/json
 
 ###
 
-POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/43/profile-posts
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/users/1/profile-posts
 Accept: application/json
 Content-Type: application/json
 
