@@ -5,15 +5,26 @@ namespace Blueeit.Api.Mappings;
 
 public static class ProfilePostMappings
 {
-    public static ProfilePostResponse ToResponse(this ProfilePost profilePost)
+    public static ProfilePostResponse ToResponse(
+        this ProfilePost profilePost)
     {
         return new ProfilePostResponse
         {
             Id = profilePost.Id,
             UserId = profilePost.UserId,
             AuthorId = profilePost.AuthorId,
-            CreationDate = profilePost.CreationDate,
+            CreatedAt = profilePost.CreatedAt,
             Content = profilePost.Content
+        };
+    }
+
+    public static ProfilePostSummary ToSummary(
+        this ProfilePost profilePost)
+    {
+        return new ProfilePostSummary
+        {
+            Id = profilePost.Id,
+            CreatedAt = profilePost.CreatedAt
         };
     }
 }

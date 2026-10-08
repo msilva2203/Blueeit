@@ -50,7 +50,7 @@ public class InMemoryProfilePostService : IProfilePostService
                 profilePosts,
 
             ProfilePostQueryKey.Newest =>
-                profilePosts.OrderByDescending(profilePost => profilePost.CreationDate),
+                profilePosts.OrderByDescending(profilePost => profilePost.CreatedAt),
 
             _ => profilePosts
         };
@@ -85,7 +85,7 @@ public class InMemoryProfilePostService : IProfilePostService
                 profilePosts,
 
             ProfilePostQueryKey.Newest =>
-                profilePosts.OrderByDescending(profilePost => profilePost.CreationDate),
+                profilePosts.OrderByDescending(profilePost => profilePost.CreatedAt),
 
             _ => profilePosts
         };
@@ -120,7 +120,7 @@ public class InMemoryProfilePostService : IProfilePostService
                 profilePosts,
 
             ProfilePostQueryKey.Newest =>
-                profilePosts.OrderByDescending(profilePost => profilePost.CreationDate),
+                profilePosts.OrderByDescending(profilePost => profilePost.CreatedAt),
 
             _ => profilePosts
         };
@@ -148,7 +148,7 @@ public class InMemoryProfilePostService : IProfilePostService
             Id = _nextId++,
             UserId = userId,
             AuthorId = authorId,
-            CreationDate = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
             Content = content
         };
 
@@ -157,7 +157,7 @@ public class InMemoryProfilePostService : IProfilePostService
         await _activityService.CreateAsync(
             CreateUserActivityData.ProfilePostCreated(
                 profilePost.AuthorId,
-                profilePost.CreationDate,
+                profilePost.CreatedAt,
                 profilePost.Id,
                 profilePost.UserId
             )
