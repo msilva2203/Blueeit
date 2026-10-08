@@ -63,7 +63,7 @@ public class InMemoryPostService : IPostService
                 posts,
 
             PostQueryKey.Newest =>
-                posts.OrderByDescending(post => post.CreationDate),
+                posts.OrderByDescending(post => post.CreatedAt),
 
             _ => posts
         };
@@ -98,7 +98,7 @@ public class InMemoryPostService : IPostService
                 posts,
 
             PostQueryKey.Newest =>
-                posts.OrderByDescending(post => post.CreationDate),
+                posts.OrderByDescending(post => post.CreatedAt),
 
             _ => posts
         };
@@ -126,7 +126,7 @@ public class InMemoryPostService : IPostService
             Id = _nextId++,
             ThreadId = threadId,
             AuthorId = authorId,
-            CreationDate = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Content = content
         };
 
@@ -135,7 +135,7 @@ public class InMemoryPostService : IPostService
         await _activityService.CreateAsync(
             CreateUserActivityData.PostCreated(
                 post.AuthorId,
-                post.CreationDate,
+                post.CreatedAt,
                 post.ThreadId,
                 post.Id
             )
