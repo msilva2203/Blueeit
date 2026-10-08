@@ -1,6 +1,6 @@
 namespace Blueeit.Api.Models;
 
-public enum ActivityType
+public enum UserActivityType
 {
     ForumCreated,
     ThreadCreated,
@@ -8,15 +8,15 @@ public enum ActivityType
     ProfilePostCreated
 }
 
-public class Activity
+public class UserActivity
 {
     public int Id { get; set; }
     public int UserId { get; set; }
-    public ActivityType Type { get; set; }
+    public UserActivityType Type { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? ForumId { get; set; }
     public int? ThreadId { get; set; }
     public int? PostId { get; set; }
     public int? ProfilePostId { get; set; }
-    public int? ProfileUserId { get; set; }
+    public int? ProfileOwnerId { get; set; }
 }
