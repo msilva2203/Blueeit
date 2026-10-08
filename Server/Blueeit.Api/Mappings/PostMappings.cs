@@ -18,7 +18,8 @@ public static class PostMappings
         };
     }
 
-    public static PostSummary ToSummary(this Post post)
+    public static PostSummary ToSummary(
+        this Post post)
     {
         return new PostSummary
         {

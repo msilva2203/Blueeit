@@ -144,7 +144,7 @@ public class InMemoryForumService : IForumService
             Id = _nextId++,
             ParentId = parentId,
             AuthorId = authorId,
-            CreationDate = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Title = title
         };
 
@@ -153,7 +153,7 @@ public class InMemoryForumService : IForumService
         await _activityService.CreateAsync(
             CreateUserActivityData.ForumCreated(
                 forum.AuthorId,
-                forum.CreationDate,
+                forum.CreatedAt,
                 forum.Id
             )
         );

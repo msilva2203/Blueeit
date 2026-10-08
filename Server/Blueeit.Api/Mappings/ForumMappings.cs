@@ -14,9 +14,20 @@ public static class ForumMappings
             Id = forum.Id,
             ParentId = forum.ParentId,
             AuthorId = forum.AuthorId,
-            CreationDate = forum.CreationDate,
+            CreatedAt = forum.CreatedAt,
             Title = forum.Title,
             Metadata = metadata
+        };
+    }
+
+    public static ForumSummary ToSummary(
+        this Forum forum)
+    {
+        return new ForumSummary
+        {
+            Id = forum.Id,
+            CreatedAt = forum.CreatedAt,
+            Title = forum.Title
         };
     }
 }

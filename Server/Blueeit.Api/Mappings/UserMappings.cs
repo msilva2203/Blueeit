@@ -14,7 +14,7 @@ public static class UserMappings
             Id = user.Id,
             Username = user.Username,
             Email = user.Email,
-            CreationDate = user.CreationDate,
+            CreatedAt = user.CreatedAt,
             Metadata = metadata
         };
     }
@@ -27,7 +27,7 @@ public static class UserMappings
             Id = user.Id,
             Username = user.Username,
             Email = user.Email,
-            CreatedAt = user.CreationDate
+            CreatedAt = user.CreatedAt
         };
     }
 }

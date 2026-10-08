@@ -47,7 +47,7 @@ public class InMemoryUserService : IUserService
     public Task<UserResponse?> GetLatestUser()
     {
         User? user = _users
-            .OrderByDescending(user => user.CreationDate)
+            .OrderByDescending(user => user.CreatedAt)
             .FirstOrDefault();
 
         if (user is null)
@@ -78,10 +78,10 @@ public class InMemoryUserService : IUserService
                 users,
 
             UserQueryKey.Newest =>
-                users.OrderByDescending(user => user.CreationDate),
+                users.OrderByDescending(user => user.CreatedAt),
 
             UserQueryKey.Oldest =>
-                users.OrderBy(user => user.CreationDate),
+                users.OrderBy(user => user.CreatedAt),
 
             UserQueryKey.MostMessages =>
                 users.OrderByDescending(user =>
@@ -114,7 +114,7 @@ public class InMemoryUserService : IUserService
             Username = username,
             Email = email,
             Password = password,
-            CreationDate = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow
         };
 
         _users.Add(user);
