@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blueeit.Api", "Blueeit.Api\Blueeit.Api.csproj", "{032CF0B1-538A-475D-872F-60F22F7DCE8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blueeit.Tests", "Blueeit.Tests\Blueeit.Tests.csproj", "{76DDC408-9C72-429A-8F5B-E6A797EEE13E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{032CF0B1-538A-475D-872F-60F22F7DCE8F}.Release|x64.Build.0 = Release|Any CPU
 		{032CF0B1-538A-475D-872F-60F22F7DCE8F}.Release|x86.ActiveCfg = Release|Any CPU
 		{032CF0B1-538A-475D-872F-60F22F7DCE8F}.Release|x86.Build.0 = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|x64.Build.0 = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Debug|x86.Build.0 = Debug|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|x64.ActiveCfg = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|x64.Build.0 = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|x86.ActiveCfg = Release|Any CPU
+		{76DDC408-9C72-429A-8F5B-E6A797EEE13E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
