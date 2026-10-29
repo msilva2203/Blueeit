@@ -14,11 +14,11 @@ export default function ForumNode({forum}) {
                 <div className="blueeit-forumnode-stats">
                     <dl className="blueeit-forumnode-pairs">
                         <dt className="minor">Threads</dt>
-                        <dd>20</dd>
+                        <dd>{forum.metadata.threadCount}</dd>
                     </dl>
                     <dl className="blueeit-forumnode-pairs">
                         <dt className="minor">Messages</dt>
-                        <dd>999</dd>
+                        <dd>{forum.metadata.postCount}</dd>
                     </dl>
                 </div>
             </div>

@@ -1,36 +1,28 @@
 import { useState, useEffect } from "react";
 
+import { getStats } from "../../api/stats";
+
 import Block from "../Block";
 
 import "./StatsPanel.css";
 import "./Panel.css";
 
-const API_URL = "http://localhost:5230/api/v1";
-
 export default function StatsPanel() {
     const [stats, setStats] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function fetchStats() {
-            setLoading(true);
+            setIsLoading(true);
 
             try {
-                const response = await fetch(
-                    `${API_URL}/stats`
-                );
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch stats!");
-                }
-
-                const data = await response.json();
+                const data = await getStats();
 
                 setStats(data);
             } catch (error) {
                 console.error(error);
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         }
 
@@ -47,7 +39,7 @@ export default function StatsPanel() {
                             Forums:
                         </dt>
                         <dd>
-                            {loading ? (0) : (stats.forumCount)}
+                            {isLoading ? ("-") : (stats.forumCount)}
                         </dd>
                     </dl>
                     <dl className="blueeit-panel-stats-pairs">
@@ -55,7 +47,7 @@ export default function StatsPanel() {
                             Threads:
                         </dt>
                         <dd>
-                            {loading ? (0) : (stats.threadCount)}
+                            {isLoading ? ("-") : (stats.threadCount)}
                         </dd>
                     </dl>
                     <dl className="blueeit-panel-stats-pairs">
@@ -63,7 +55,7 @@ export default function StatsPanel() {
                             Messages:
                         </dt>
                         <dd>
-                            {loading ? (0) : (stats.postCount)}
+                            {isLoading ? ("-") : (stats.postCount)}
                         </dd>
                     </dl>
                     <dl className="blueeit-panel-stats-pairs">
@@ -71,7 +63,19 @@ export default function StatsPanel() {
                             Members:
                         </dt>
                         <dd>
-                            {loading ? (0) : (stats.userCount)}
+                            {isLoading ? ("-") : (stats.userCount)}
+                        </dd>
+                    </dl>
+                    <dl className="blueeit-panel-stats-pairs">
+                        <dt>
+                            Latest Member:
+                        </dt>
+                        <dd>
+                            {isLoading ? ("-") : (
+                                stats.latestUser != null ? (
+                                    <a href={`/members/${stats.latestUser.id}`}>{stats.latestUser.username}</a>
+                                ) : ("-")
+                            )}
                         </dd>
                     </dl>
                 </div>

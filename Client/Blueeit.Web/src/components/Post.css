@@ -36,6 +36,7 @@
         var(--color-greyneutral-4),
         var(--color-greyneutral-6)
     );
+    background: var(--color-greyneutral-3);
     margin-bottom: 8px;
 }
 
@@ -55,7 +56,7 @@
 
     font-size: 80%;
 
-    border-bottom: 1px solid var(--color-greyneutral-8);
+    border-bottom: 1px solid var(--color-greyneutral-7);
 }
 
 .blueeit-post-main-content {

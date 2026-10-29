@@ -1,0 +1,17 @@
+.blueeit-block-link {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.blueeit-block-link.is-selected {
+    font-weight: 600;
+    background: var(--color-sky-6);
+    border-left: 4px solid var(--color-sky-10);
+    padding-left: 8px;
+}
+
+.blueeit-block-link:hover {
+    background: var(--color-sky-6)
+}

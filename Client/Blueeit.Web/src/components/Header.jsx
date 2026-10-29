@@ -1,9 +1,18 @@
-import NavLink from "./NavLink"
-import ActionBar from "./ActionBar"
+import { useLocation } from "react-router-dom";
+
+import NavLink from "./NavLink";
+import ActionBar from "./ActionBar";
 
 import './Header.css';
 
 export default function Header() {
+    const location = useLocation();
+
+    const isForums = location.pathname.startsWith("/forums");
+    const isWhatsNew = location.pathname.startsWith("/whats-new");
+    const isMembers = location.pathname.startsWith("/members");
+    const isHelp = location.pathname.startsWith("/help");
+
     return (
         <header className="blueeit-header">
             <div className="blueeit-page-content">
@@ -13,10 +22,10 @@ export default function Header() {
                 <div className="blueeit-page-content">
                     <nav className="blueeit-header-nav">
                         <div className="blueeit-header-nav-list">
-                            <NavLink href="/forums">Forums</NavLink>
-                            <NavLink href="/members">Members</NavLink>
-                            <NavLink href="/contact">Contact</NavLink>
-                            <NavLink href="/about">About</NavLink>
+                            <NavLink href="/forums" isSelected={isForums}>Forums</NavLink>
+                            <NavLink href="/whats-new" isSelected={isWhatsNew}>What's New</NavLink>
+                            <NavLink href="/members" isSelected={isMembers}>Members</NavLink>
+                            <NavLink href="/help/about" isSelected={isHelp}>Help</NavLink>
                         </div>
                     </nav>
                 </div>

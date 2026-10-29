@@ -1,3 +1,4 @@
 .blueeit-block-footer {
-    min-height: 4px;
+    border-top: 1px solid var(--color-greyneutral-8);
+    background: var(--color-greyneutral-3);
 }

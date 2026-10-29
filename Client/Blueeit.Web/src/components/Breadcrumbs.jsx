@@ -15,8 +15,8 @@ export default function Breadcrumbs({items}) {
     return (
         <>
             <nav aria-label="Breadcrumb" className="blueeit-breadcrumbs-main">
-                { items.map((item) => (
-                    <div className="blueeit-breadcrumbs-item">
+                { items.map((item, index) => (
+                    <div className="blueeit-breadcrumbs-item" key={index}>
                         <Link to={`${item.url}`}>
                             <h3>
                                 {item.name}

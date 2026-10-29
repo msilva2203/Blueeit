@@ -2,11 +2,13 @@
     background-color:var(--color-greyneutral-1);
     background: linear-gradient(
         to right,
-        var(--color-greyneutral-1),
-        var(--color-greyneutral-2)
+        var(--color-sky-1),
+        var(--color-sky-2)
     );
     padding-top: 96px;
     width:100%;
+
+    box-shadow: 0px 2px 10px var(--color-greyneutral-6);
 }
 
 .blueeit-header-logo {
@@ -23,7 +25,7 @@
 }
 
 .blueeit-header-internal {
-    background-color:var(--color-sky-2);
+    background-color:var(--color-sky-3);
     display: flex;
     align-items: center;
     justify-content: space-between;

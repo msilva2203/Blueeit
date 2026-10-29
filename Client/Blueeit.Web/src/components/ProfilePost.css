@@ -1,0 +1,16 @@
+.blueeit-post-user.profile {
+    min-width: 56px;
+}
+
+.blueeit-post-user-avatar.profile {
+    width: 48px;
+    height: 48px;
+}
+
+.blueeit-post-main.profile {
+    min-height: 0;
+}
+
+.blueeit-post-main-header.profile {
+    border-bottom-width: 0;
+}

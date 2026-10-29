@@ -11,4 +11,6 @@ footer {
 
     background-color: var(--color-sky-1);
     color: var(--color-greyneutral-12);
+
+    box-shadow: 0px -2px 10px var(--color-greyneutral-6);
 }

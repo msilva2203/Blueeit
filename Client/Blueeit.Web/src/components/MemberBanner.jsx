@@ -1,9 +1,10 @@
+import formatRelativeDate from "../utils/date";
 import Block from "./Block";
 
 import "./MemberBanner.css";
 import Post from "./Post";
 
-export default function MemberBanner() {
+export default function MemberBanner({user}) {
     return (
         <>
             <Block>
@@ -18,12 +19,12 @@ export default function MemberBanner() {
                                 </div>
                             </div>
                             <div className="blueeit-memberbanner-info">
-                                <h1 className="blueeit-memberbanner-username">marcosilva2203</h1>
+                                <h1 className="blueeit-memberbanner-username">{user.username}</h1>
                                 <div className="blueeit-memberbanner-info-inner">
                                     <div className="blueeit-memberbanner-blurb">
                                         <dl className="blueeit-pairs inline">
                                             <dt>Joined: </dt>
-                                            <dd>Sep 26, 2026</dd>
+                                            <dd>{formatRelativeDate(user.createdAt)}</dd>
                                         </dl>
                                     </div>
                                     <div className="blueeit-memberbanner-blurb">

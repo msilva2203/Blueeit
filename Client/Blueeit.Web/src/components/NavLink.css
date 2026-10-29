@@ -6,7 +6,6 @@
     background-color: transparent;
 
     font-size: 16px;
-    font-weight:600;
     text-decoration: none;
     border-radius: 0px;
 
@@ -15,7 +14,12 @@
         color 0.2s ease;
 }
 
-.blueeit-navlink-item:hover {
+.blueeit-navlink-item.is-selected {
+    background-color: var(--color-sky-2);
+    font-weight:600;
+}
+
+.blueeit-navlink-item:hover:not(.is-selected) {
     background-color: var(--color-sky-6);
     color: white;
 }

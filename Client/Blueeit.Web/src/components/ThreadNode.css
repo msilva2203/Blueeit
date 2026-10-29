@@ -19,6 +19,7 @@
         var(--color-greyneutral-4),
         var(--color-greyneutral-6)
     );
+    background: var(--color-greyneutral-3);
     border: 1px solid var(--color-greyneutral-8);
     width: 36px;
     height: 36px;
@@ -68,4 +69,10 @@
 .blueeit-threadnode-latest {
     display: table-cell;
     width: 190px;
+}
+
+.blueeit-threadnode-minor {
+    display: flex;
+    flex-direction: row;
+    vertical-align: bottom;
 }

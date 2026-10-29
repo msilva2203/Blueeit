@@ -11,8 +11,8 @@
     position: relative;
     background: linear-gradient(
         to right,
-        var(--color-blue-1),
-        var(--color-cyan-4)
+        var(--color-sky-2),
+        var(--color-sky-6)
     );
     
     box-sizing: border-box;
@@ -62,10 +62,6 @@
 .blueeit-memberbanner-info {
     padding: 12px;
     padding-left: 214px;
-}
-
-.blueeit-memberbanner-username {
-    
 }
 
 .blueeit-memberbanner-content {

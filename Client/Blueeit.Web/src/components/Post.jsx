@@ -1,3 +1,4 @@
+import formatRelativeDate from "../utils/date";
 import "./Post.css";
 
 export default function Post({post}) {
@@ -9,11 +10,11 @@ export default function Post({post}) {
                         <div className="blueeit-post-user-avatar">
                             
                         </div>
-                        <h3><a href="/members/1">msilva</a></h3>
+                        <h3><a href={`/members/${post.author.id}`}>{post.author.username}</a></h3>
                     </div>
                     <div className="blueeit-post-main">
                         <header className="blueeit-post-main-header">
-                            <p>{post.id}</p>
+                            <p>{formatRelativeDate(post.createdAt)}</p>
                         </header>
                         <div className="blueeit-post-main-content">
                             <p>{post.content}</p>

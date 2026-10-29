@@ -1,4 +1,6 @@
 import Block from "../Block";
+import BlockContent from "../BlockContent";
+import BlockFooter from "../BlockFooter";
 
 import "./OnlineMembersPanel.css";
 import "./Panel.css";
@@ -10,6 +12,11 @@ export default function OnlineMembersPanel() {
             <div className="blueeit-panel-body placeholder">
                 
             </div>
+            <BlockFooter>
+                <BlockContent>
+                    <small>Total: 0</small>
+                </BlockContent>
+            </BlockFooter>
         </Block>
     );
 }

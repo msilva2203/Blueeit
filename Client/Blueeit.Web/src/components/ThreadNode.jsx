@@ -1,3 +1,4 @@
+import formatRelativeDate from "../utils/date";
 import "./ThreadNode.css";
 
 export default function ThreadNode({thread}) {
@@ -16,8 +17,8 @@ export default function ThreadNode({thread}) {
                         </a>
                     </h3>
                     <div className="blueeit-threadnode-minor minor">
-                        <a href="/members/1">msilva</a>
-                        
+                        <p><a href={`/members/${thread.author.id}`}>{thread.author.username}</a></p>
+                        <p>{formatRelativeDate(thread.createdAt)}</p>
                     </div>
                 </div>
                 <div className="blueeit-threadnode-stats">
@@ -26,7 +27,7 @@ export default function ThreadNode({thread}) {
                             Replies:
                         </dt>
                         <dd>
-                            0
+                            20K
                         </dd>
                     </dl>
                     <dl className="blueeit-threadnode-stats-pairs">
@@ -34,7 +35,7 @@ export default function ThreadNode({thread}) {
                             Views:
                         </dt>
                         <dd className="minor">
-                            0
+                            30K
                         </dd>
                     </dl>
                 </div>

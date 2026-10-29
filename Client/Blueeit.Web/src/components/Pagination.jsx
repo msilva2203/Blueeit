@@ -42,7 +42,7 @@ export default function Pagination({currentPage, totalPages, setPage}) {
 
                 <ul className="blueeit-pagination-main">
                     { pages.map((page, index) => (
-                        <li className={`blueeit-pagination-item page ${page == currentPage ? ("current") : ("")}`}>
+                        <li className={`blueeit-pagination-item page ${page == currentPage ? ("current") : ("")}`} key={index}>
                             <button key={index} onClick={() => setPage(page)} className={`blueeit-pagination-btn`}>
                                 <h3 className={`blueeit-pagination-content ${page == currentPage ? ("current") : ("")}`}>
                                     {page}

@@ -3,4 +3,6 @@
 
     border: 1px solid var(--color-greyneutral-8);
     border-radius: 4px;
+
+    box-shadow: 6px 6px 8px var(--color-sky-2);
 }

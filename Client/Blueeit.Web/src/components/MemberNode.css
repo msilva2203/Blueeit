@@ -1,0 +1,37 @@
+.blueeit-membernode-body {
+    display: flex;
+    padding: 12px;
+}
+
+.blueeit-membernode-icon {
+    vertical-align: top;
+    width: 48px;
+    height: 48px;
+    position: relative;
+}
+
+.blueeit-membernode-icon-avatar {
+    background: linear-gradient(
+        to right,
+        var(--color-greyneutral-4),
+        var(--color-greyneutral-6)
+    );
+    background: var(--color-greyneutral-3);
+    border: 1px solid var(--color-greyneutral-8);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.blueeit-membernode-main {
+    flex: 1;
+    min-width: 0;
+    vertical-align: top;
+    padding-left: 12px;
+}
+
+.blueeit-membernode-extra {
+    float: right;
+    vertical-align: top;
+    color: var(--color-greyneutral-6);
+}
