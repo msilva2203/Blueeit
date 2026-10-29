@@ -16,6 +16,8 @@ public interface IPostRepository
 
     Task<int> GetCountAsync();
 
+    int GetCountByAuthorId(int authorId);
+
     Post Create(int threadId, int authorId, string content);
 
     Task<Post> CreateAsync(int threadId, int authorId, string content);

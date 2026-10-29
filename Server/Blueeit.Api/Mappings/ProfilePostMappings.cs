@@ -1,4 +1,5 @@
 using Blueeit.Api.DTOs.ProfilePost;
+using Blueeit.Api.DTOs.User;
 using Blueeit.Api.Models;
 
 namespace Blueeit.Api.Mappings;
@@ -6,13 +7,15 @@ namespace Blueeit.Api.Mappings;
 public static class ProfilePostMappings
 {
     public static ProfilePostResponse ToResponse(
-        this ProfilePost profilePost)
+        this ProfilePost profilePost,
+        UserSummary user,
+        UserSummary author)
     {
         return new ProfilePostResponse
         {
             Id = profilePost.Id,
-            UserId = profilePost.UserId,
-            AuthorId = profilePost.AuthorId,
+            User = user,
+            Author = author,
             CreatedAt = profilePost.CreatedAt,
             Content = profilePost.Content
         };

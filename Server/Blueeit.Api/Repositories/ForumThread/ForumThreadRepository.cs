@@ -8,6 +8,8 @@ public interface IForumThreadRepository
 
     Task<ForumThread?> GetByIdAsync(int id);
 
+    ForumThread? GetLatestByForumId(int forumId);
+
     IEnumerable<ForumThread> GetAll();
 
     Task<IEnumerable<ForumThread>> GetAllAsync();
@@ -15,6 +17,8 @@ public interface IForumThreadRepository
     int GetCount();
 
     Task<int> GetCountAsync();
+
+    int GetCountByForumId(int forumId);
 
     ForumThread Create(int forumId, int authorId, string title, string content);
 

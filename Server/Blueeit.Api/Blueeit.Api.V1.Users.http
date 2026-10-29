@@ -50,7 +50,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "username": "marcosilva2",
+    "username": "Stitch",
     "email": "marcosilva2203@outlook.pt",
     "password": "abc123"
 }

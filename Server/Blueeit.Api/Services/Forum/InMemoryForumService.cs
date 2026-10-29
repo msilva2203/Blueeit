@@ -12,34 +12,23 @@ public class InMemoryForumService : IForumService
     private readonly IForumRepository _forumRepository;
     private readonly IForumThreadRepository _threadRepository;
     private readonly IUserActivityRepository _activityRepository;
+    private readonly IForumFactoryService _forumFactory;
 
     public InMemoryForumService(
         IForumRepository forumRepository,
         IForumThreadRepository threadRepository,
-        IUserActivityRepository activityRepository)
+        IUserActivityRepository activityRepository,
+        IForumFactoryService forumFactory)
     {
         _forumRepository = forumRepository;
         _threadRepository = threadRepository;
         _activityRepository = activityRepository;
+        _forumFactory = forumFactory;
     }
 
-    private int GetThreadCount(int id)
+    private ForumResponse MakeForumResponse(Forum forum)
     {
-        return 0;
-    }
-
-    private int GetPostCount(int id)
-    {
-        return 0;
-    }
-
-    private ForumMetadata GetForumMetadata(Forum forum)
-    {
-        return new ForumMetadata
-        {
-            ThreadCount = GetThreadCount(forum.Id),
-            PostCount  = GetPostCount(forum.Id)
-        };
+        return _forumFactory.MakeResponse(forum);
     }
 
     public async Task<ForumResponse?> GetForumByIdAsync(int id)
@@ -51,7 +40,7 @@ public class InMemoryForumService : IForumService
             return null;
         }
 
-        var response = forum.ToResponse(GetForumMetadata(forum));
+        var response = MakeForumResponse(forum);
 
         return response;
     }
@@ -61,7 +50,7 @@ public class InMemoryForumService : IForumService
         var all = await _forumRepository.GetAllAsync();
 
         var forums = all
-            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
+            .Select(forum => MakeForumResponse(forum));
 
         int totalCount = forums.Count();
 
@@ -87,7 +76,7 @@ public class InMemoryForumService : IForumService
 
         var forums = all
             .Where(forum => forum.ParentId == null)
-            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
+            .Select(forum => MakeForumResponse(forum));
 
         var totalCount = forums.Count();
 
@@ -113,7 +102,7 @@ public class InMemoryForumService : IForumService
 
         var subforums = all
             .Where(forum => forum.ParentId == id)
-            .Select(forum => forum.ToResponse(GetForumMetadata(forum)));
+            .Select(forum => MakeForumResponse(forum));
 
         int totalCount = subforums.Count();
 
@@ -149,7 +138,7 @@ public class InMemoryForumService : IForumService
             )
         );
 
-        var result = forum.ToResponse(new ForumMetadata());
+        var result = MakeForumResponse(forum);
 
         return result;
     }

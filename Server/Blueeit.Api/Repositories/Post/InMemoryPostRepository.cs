@@ -37,6 +37,12 @@ public class InMemoryPostRepository : IPostRepository
         return Task.FromResult(GetCount());
     }
 
+    public int GetCountByAuthorId(int authorId)
+    {
+        return _posts
+            .Count(post => post.AuthorId == authorId);
+    }
+
     public Post Create(int threadId, int authorId, string content)
     {
         var post = new Post

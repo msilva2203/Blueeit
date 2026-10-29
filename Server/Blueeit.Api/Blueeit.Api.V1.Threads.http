@@ -18,6 +18,17 @@ Accept: application/json
 
 ###
 
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads/1/posts
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "content": "This is a post!"
+}
+
+###
+
 DELETE {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/threads/1
 Accept: application/json
 

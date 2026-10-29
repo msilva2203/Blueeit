@@ -11,17 +11,20 @@ public class InMemoryStatsService : IStatsService
     private readonly IForumRepository _forumRepository;
     private readonly IForumThreadRepository _threadRepository;
     private readonly IPostRepository _postRepository;
+    private readonly IUserFactoryService _userFactory;
 
     public InMemoryStatsService(
         IUserRepository userRepository,
         IForumRepository forumRepository,
         IForumThreadRepository threadRepository,
-        IPostRepository postRepository)
+        IPostRepository postRepository,
+        IUserFactoryService userFactory)
     {
         _userRepository = userRepository;
         _forumRepository = forumRepository;
         _threadRepository = threadRepository;
         _postRepository = postRepository;
+        _userFactory = userFactory;
     }
 
     public async Task<StatsResponse> GetStatsAsync()
@@ -38,7 +41,7 @@ public class InMemoryStatsService : IStatsService
             ForumCount = forumCount,
             ThreadCount = threadCount,
             PostCount = postCount,
-            LatestUser = latestUser is not null ? latestUser.ToResponse(new UserMetadata()) : null
+            LatestUser = latestUser is not null ? _userFactory.MakeSummary(latestUser) : null
         };
 
         return result;

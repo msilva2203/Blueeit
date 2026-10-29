@@ -10,11 +10,19 @@ namespace Blueeit.Api.Services;
 public class InMemoryUserActivityService : IUserActivityService
 {
     private readonly IUserActivityRepository _activityRepository;
+    private readonly IUserActivityFactoryService _activityFactory;
 
     public InMemoryUserActivityService(
-        IUserActivityRepository activityRepository)
+        IUserActivityRepository activityRepository,
+        IUserActivityFactoryService activityFactory)
     {
         _activityRepository = activityRepository;
+        _activityFactory = activityFactory;
+    }
+
+    private UserActivityResponse MakeUserActivityResponse(UserActivity activity)
+    {
+        return _activityFactory.MakeResponse(activity);
     }
 
     public async Task<UserActivityResponse?> GetByIdAsync(int id)
@@ -26,7 +34,7 @@ public class InMemoryUserActivityService : IUserActivityService
             return null;
         }
 
-        var result = activity.ToResponse();
+        var result = MakeUserActivityResponse(activity);
 
         return result;
     }
@@ -36,7 +44,7 @@ public class InMemoryUserActivityService : IUserActivityService
         var all = await _activityRepository.GetAllAsync();
 
         var activities = all
-            .Select(activity => activity.ToResponse());
+            .Select(activity => MakeUserActivityResponse(activity));
 
         var totalCount = activities.Count();
 
@@ -62,7 +70,7 @@ public class InMemoryUserActivityService : IUserActivityService
 
         var activities = all
             .Where(activity => activity.UserId == userId)
-            .Select(activity => activity.ToResponse());
+            .Select(activity => MakeUserActivityResponse(activity));
 
         var totalCount = activities.Count();
 
@@ -86,7 +94,7 @@ public class InMemoryUserActivityService : IUserActivityService
     {
         var activity = await _activityRepository.CreateAsync(data);
 
-        var result = activity.ToResponse();
+        var result = MakeUserActivityResponse(activity);
 
         return result;
     }

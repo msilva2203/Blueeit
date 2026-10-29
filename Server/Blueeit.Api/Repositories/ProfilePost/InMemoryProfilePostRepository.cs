@@ -37,6 +37,12 @@ public class InMemoryProfilePostRepository : IProfilePostRepository
         return Task.FromResult(GetCount());
     }
 
+    public int GetCountByAuthorId(int authorId)
+    {
+        return _profilePosts
+            .Count(profilePost => profilePost.AuthorId == authorId);
+    }
+
     public ProfilePost Create(int userId, int authorId, string content)
     {
         var profilePost = new ProfilePost

@@ -12,15 +12,23 @@ public class InMemoryForumThreadService : IForumThreadService
     private readonly IForumThreadRepository _threadRepository;
     private readonly IPostRepository _postRepository;
     private readonly IUserActivityRepository _activityRepository;
+    private readonly IForumThreadFactoryService _threadFactory;
 
     public InMemoryForumThreadService(
         IForumThreadRepository threadRepository,
         IPostRepository postRepository,
-        IUserActivityRepository activityRepository)
+        IUserActivityRepository activityRepository,
+        IForumThreadFactoryService threadFactory)
     {
         _threadRepository = threadRepository;
         _postRepository = postRepository;
         _activityRepository = activityRepository;
+        _threadFactory = threadFactory;
+    }
+
+    private ForumThreadResponse MakeForumThreadResponse(ForumThread thread)
+    {
+        return _threadFactory.MakeResponse(thread);
     }
 
     public async Task<ForumThreadResponse?> GetThreadByIdAsync(int id)
@@ -32,7 +40,7 @@ public class InMemoryForumThreadService : IForumThreadService
             return null;
         }
 
-        var response = thread.ToResponse();
+        var response = MakeForumThreadResponse(thread);
 
         return response;
     }
@@ -42,7 +50,7 @@ public class InMemoryForumThreadService : IForumThreadService
         var all = await _threadRepository.GetAllAsync();
 
         var threads = all
-            .Select(thread => thread.ToResponse());
+            .Select(thread => MakeForumThreadResponse(thread));
 
         var totalCount = threads.Count();
 
@@ -68,7 +76,7 @@ public class InMemoryForumThreadService : IForumThreadService
 
         var threads = all
             .Where(thread => thread.ForumId == forumId)
-            .Select(thread => thread.ToResponse());
+            .Select(thread => MakeForumThreadResponse(thread));
 
         var totalCount = threads.Count();
 
@@ -114,7 +122,7 @@ public class InMemoryForumThreadService : IForumThreadService
 
         thread.OpeningPostId = post.Id;
 
-        var response = thread.ToResponse();
+        var response = MakeForumThreadResponse(thread);
 
         return response;
     }

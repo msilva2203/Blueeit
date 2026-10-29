@@ -17,6 +17,13 @@ public class InMemoryForumThreadRepository : IForumThreadRepository
         return Task.FromResult(GetById(id));
     }
 
+    public ForumThread? GetLatestByForumId(int forumId)
+    {
+        return _threads
+            .OrderByDescending(thread => thread.CreatedAt)
+            .FirstOrDefault(thread => thread.ForumId == forumId);
+    }
+
     public IEnumerable<ForumThread> GetAll()
     {
         return _threads;
@@ -35,6 +42,12 @@ public class InMemoryForumThreadRepository : IForumThreadRepository
     public Task<int> GetCountAsync()
     {
         return Task.FromResult(GetCount());
+    }
+
+    public int GetCountByForumId(int forumId)
+    {
+        return _threads
+            .Count(thread => thread.ForumId == forumId);
     }
 
     public ForumThread Create(int forumId, int authorId, string title, string content)

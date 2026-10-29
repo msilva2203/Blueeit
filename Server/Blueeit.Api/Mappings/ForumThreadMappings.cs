@@ -1,4 +1,7 @@
+using Blueeit.Api.DTOs.Forum;
 using Blueeit.Api.DTOs.ForumThread;
+using Blueeit.Api.DTOs.Post;
+using Blueeit.Api.DTOs.User;
 using Blueeit.Api.Models;
 
 namespace Blueeit.Api.Mappings;
@@ -6,14 +9,17 @@ namespace Blueeit.Api.Mappings;
 public static class ForumThreadMappings
 {
     public static ForumThreadResponse ToResponse(
-        this ForumThread thread)
+        this ForumThread thread,
+        UserSummary author,
+        ForumSummary forum,
+        PostSummary openingPost)
     {
         return new ForumThreadResponse
         {
             Id = thread.Id,
-            AuthorId = thread.AuthorId,
-            ForumId = thread.ForumId,
-            OpeningPostId = thread.OpeningPostId,
+            Author = author,
+            Forum = forum,
+            OpeningPost = openingPost,
             CreatedAt = thread.CreatedAt,
             Title = thread.Title
         };

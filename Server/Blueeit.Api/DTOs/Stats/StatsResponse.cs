@@ -8,5 +8,5 @@ public class StatsResponse
     public int ForumCount { get; set; }
     public int ThreadCount { get; set; }
     public int PostCount { get; set; }
-    public UserResponse? LatestUser { get; set; }
+    public UserSummary? LatestUser { get; set; }
 }

@@ -10,19 +10,19 @@ namespace Blueeit.Api.Services;
 public class InMemoryUserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUserFactoryService _userFactory;
 
     public InMemoryUserService(
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IUserFactoryService userFactory)
     {
         _userRepository = userRepository;
+        _userFactory = userFactory;
     }
 
-    private UserMetadata GetUserMetadata(User user)
+    private UserResponse MakeUserResponse(User user)
     {
-        return new UserMetadata
-        {
-            
-        };
+        return _userFactory.MakeResponse(user);
     }
 
     public async Task<UserResponse?> GetUserByIdAsync(int id)
@@ -34,7 +34,7 @@ public class InMemoryUserService : IUserService
             return null;
         }
 
-        var result = user.ToResponse(GetUserMetadata(user));
+        var result = MakeUserResponse(user);
 
         return result;
     }
@@ -44,7 +44,7 @@ public class InMemoryUserService : IUserService
         var all = await _userRepository.GetAllAsync();
 
         var users = all
-            .Select(user => user.ToResponse(GetUserMetadata(user)));
+            .Select(user => MakeUserResponse(user));
 
         int totalCount = users.Count();
 
@@ -90,7 +90,7 @@ public class InMemoryUserService : IUserService
             password
         );
 
-        var result = user.ToResponse(new UserMetadata());
+        var result = MakeUserResponse(user);
 
         return result;
     }

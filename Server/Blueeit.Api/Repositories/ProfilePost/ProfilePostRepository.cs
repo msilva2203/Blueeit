@@ -16,6 +16,8 @@ public interface IProfilePostRepository
 
     Task<int> GetCountAsync();
 
+    int GetCountByAuthorId(int authorId);
+
     ProfilePost Create(int userId, int authorId, string content);
 
     Task<ProfilePost> CreateAsync(int userId, int authorId, string content);

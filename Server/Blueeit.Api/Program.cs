@@ -31,12 +31,19 @@ builder.Services.AddSingleton<IProfilePostRepository, InMemoryProfilePostReposit
 builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
 builder.Services.AddSingleton<IUserActivityRepository, InMemoryUserActivityRepository>();
 
-builder.Services.AddSingleton<IUserActivityService, InMemoryUserActivityService>();
-builder.Services.AddSingleton<IUserService, InMemoryUserService>();
+builder.Services.AddSingleton<IForumFactoryService, ForumFactoryService>();
+builder.Services.AddSingleton<IForumThreadFactoryService, ForumThreadFactoryService>();
+builder.Services.AddSingleton<IPostFactoryService, PostFactoryService>();
+builder.Services.AddSingleton<IProfilePostFactoryService, ProfilePostFactoryService>();
+builder.Services.AddSingleton<IUserFactoryService, UserFactoryService>();
+builder.Services.AddSingleton<IUserActivityFactoryService, UserActivityFactoryService>();
+
 builder.Services.AddSingleton<IForumService, InMemoryForumService>();
 builder.Services.AddSingleton<IForumThreadService, InMemoryForumThreadService>();
 builder.Services.AddSingleton<IPostService, InMemoryPostService>();
 builder.Services.AddSingleton<IProfilePostService, InMemoryProfilePostService>();
+builder.Services.AddSingleton<IUserService, InMemoryUserService>();
+builder.Services.AddSingleton<IUserActivityService, InMemoryUserActivityService>();
 builder.Services.AddSingleton<IStatsService, InMemoryStatsService>();
 
 builder.Services.AddOpenApi();

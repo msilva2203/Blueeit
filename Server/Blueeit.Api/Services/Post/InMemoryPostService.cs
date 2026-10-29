@@ -14,32 +14,21 @@ public class InMemoryPostService : IPostService
 {
     private readonly IPostRepository _postRepository;
     private readonly IUserActivityRepository _activityRepository;
+    private readonly IPostFactoryService _postFactory;
 
     public InMemoryPostService(
         IPostRepository postRepository,
-        IUserActivityRepository activityRepository)
+        IUserActivityRepository activityRepository,
+        IPostFactoryService postFactory)
     {
         _postRepository = postRepository;
         _activityRepository = activityRepository;
+        _postFactory = postFactory;
     }
 
     private PostResponse GetPostResponse(Post post)
     {
-        var thread = new ForumThreadSummary
-        {
-            Title = ""
-        };
-
-        var author = new UserSummary
-        {
-            Username = "msilva",
-            Email = "pff"
-        };
-
-        return post.ToResponse(
-            thread,
-            author
-        );
+        return _postFactory.MakeResponse(post);
     }
 
     public async Task<PostResponse?> GetPostByIdAsync(int id)

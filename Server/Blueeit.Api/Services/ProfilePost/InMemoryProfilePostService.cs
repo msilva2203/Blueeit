@@ -12,13 +12,21 @@ public class InMemoryProfilePostService : IProfilePostService
 {
     private readonly IProfilePostRepository _profilePostRepository;
     private readonly IUserActivityRepository _activityRepository;
+    private readonly IProfilePostFactoryService _profilePostFactory;
 
     public InMemoryProfilePostService(
         IProfilePostRepository profilePostRepository,
-        IUserActivityRepository activityRepository)
+        IUserActivityRepository activityRepository,
+        IProfilePostFactoryService profilePostFactory)
     {
         _profilePostRepository = profilePostRepository;
         _activityRepository = activityRepository;
+        _profilePostFactory = profilePostFactory;
+    }
+
+    private ProfilePostResponse MakeProfilePostResponse(ProfilePost profilePost)
+    {
+        return _profilePostFactory.MakeResponse(profilePost);
     }
 
     public async Task<ProfilePostResponse?> GetProfilePostByIdAsync(int id)
@@ -30,7 +38,7 @@ public class InMemoryProfilePostService : IProfilePostService
             return null;
         }
 
-        var result = profilePost.ToResponse();
+        var result = MakeProfilePostResponse(profilePost);
 
         return result;
     }
@@ -40,7 +48,7 @@ public class InMemoryProfilePostService : IProfilePostService
         var all = await _profilePostRepository.GetAllAsync();
 
         var profilePosts = all
-            .Select(profilePost => profilePost.ToResponse());
+            .Select(profilePost => MakeProfilePostResponse(profilePost));
 
         var totalCount = profilePosts.Count();
 
@@ -77,7 +85,7 @@ public class InMemoryProfilePostService : IProfilePostService
 
         var profilePosts = all
             .Where(profilePost => profilePost.UserId == userId)
-            .Select(profilePost => profilePost.ToResponse());
+            .Select(profilePost => MakeProfilePostResponse(profilePost));
 
         var totalCount = profilePosts.Count();
 
@@ -114,7 +122,7 @@ public class InMemoryProfilePostService : IProfilePostService
 
         var profilePosts = all
             .Where(profilePost => profilePost.AuthorId == authorId)
-            .Select(profilePost => profilePost.ToResponse());
+            .Select(profilePost => MakeProfilePostResponse(profilePost));
 
         var totalCount = profilePosts.Count();
 
@@ -162,7 +170,7 @@ public class InMemoryProfilePostService : IProfilePostService
             )
         );
 
-        var result = profilePost.ToResponse();
+        var result = MakeProfilePostResponse(profilePost);
 
         return result;
     }
