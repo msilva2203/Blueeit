@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { usePaginatedState } from '../hooks/usePaginatedState';
+
+import { getForums } from '../api/forums';
+
 import ThreadList from "../components/ThreadList";
 import Block from "../components/Block";
 import BlockItem from "../components/BlockItem";
@@ -11,75 +15,71 @@ import PageLayout from '../components/PageLayout';
 import BodyHeader from '../components/BodyHeader';
 import OnlineMembersPanel from '../components/panels/OnlineMembersPanel';
 import StatsPanel from '../components/panels/StatsPanel';
+import ForumNodeList from '../components/ForumNodeList';
+import BlockContent from '../components/BlockContent';
+import ErrorBlock from '../components/ErrorBlock';
 
-const API_URL = "http://localhost:5230/api/v1"
+const API_URL = "http://localhost:5230/api/v1";
 
 export default function ForumsPage() {
-    const [forums, setForums] = useState([]);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(true);
+    const forums = usePaginatedState({
+        initialPage: 1
+    });
 
     const pageSize = 20;
 
-    const defaultForums = [
-        {
-            id: 1,
-            title: "Instructions and Schedule"
-        },
-        {
-            id: 2,
-            title: "Changelog"
-        },
-        {
-            id: 3,
-            title: "Bug Reports"
-        },
-        {
-            id: 4,
-            title: "Community 1"
-        },
-        {
-            id: 5,
-            title: "Community 2"
-        },
-        {
-            id: 6,
-            title: "Community 3"
-        },
-        {
-            id: 7,
-            title: "Community 4"
-        }
-    ];
-
     useEffect(() => {
         async function fetchForums() {
-            setLoading(true);
+            forums.setIsLoading(true);
 
             try {
-                const response = await fetch(
-                    `${API_URL}/forums?page=${page}&pageSize=${pageSize}`
-                );
+                const data = await getForums(forums.page, pageSize);
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch forums!");
-                }
-
-                const data = await response.json();
-
-                setForums(data.items);
-                setTotalPages(data.totalPages);
+                forums.setData(data);
             } catch (error) {
                 console.error(error);
-                setForums(defaultForums);
+
+                forums.setError(error);
             } finally {
-                setLoading(false);
+                forums.setIsLoading(false);
             }
         }
 
         fetchForums();
-    }, [page])
+    }, [forums.page])
+
+    function renderForums() {
+        if (forums.isLoading) {
+            return (
+                <BlockContent>
+                    <small>
+                        Loading...
+                    </small>
+                </BlockContent>
+                
+            );
+        }
+
+        if (forums.error != null) {
+            return (
+                <BlockContent>
+                    <ErrorBlock>
+                        <BlockContent>
+                            <small className="blueeit-error">
+                                Unable to load forums.
+                            </small>
+                        </BlockContent>
+                    </ErrorBlock>
+                </BlockContent>
+            );
+        }
+
+        return (
+            <>
+                <ForumNodeList forums={forums.items} />
+            </>
+        );
+    }
 
     return (
         <>
@@ -89,18 +89,7 @@ export default function ForumsPage() {
                     <BlockHeader>
                         General
                     </BlockHeader>
-                    {loading ? (
-                        <>
-                        </>
-                    ) : (
-                        <div>
-                            {forums.map((forum) => (
-                            <BlockItem>
-                                <ForumNode forum={forum} />
-                            </BlockItem>
-                            ))}
-                        </div>
-                    )}
+                    {renderForums()}
                 </Block>
             </PageLayout>
         </>

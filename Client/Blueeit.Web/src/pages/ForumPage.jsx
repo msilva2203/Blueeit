@@ -14,6 +14,8 @@ import BodyHeader from '../components/BodyHeader';
 import PageLayout from '../components/PageLayout';
 import Breadcrumbs from '../components/Breadcrumbs';
 import OnlineMembersPanel from '../components/panels/OnlineMembersPanel';
+import ForumNodeList from '../components/ForumNodeList';
+import ThreadNodeList from '../components/ThreadNodeList';
 
 const API_URL = "http://localhost:5230/api/v1";
 
@@ -132,37 +134,48 @@ export default function ForumPage() {
                     </>
                 ) : (
                     <>
-                        <BlockOuterTop>
-                            <Pagination currentPage={subforumsPage} totalPages={subforumsTotalPages} setPage={setSubforumsPage} />
-                        </BlockOuterTop>
-                        <Block>
-                            {subforums.map((subforum) => (
-                                <BlockItem>
-                                    <ForumNode forum={subforum} />
-                                </BlockItem>
-                            ))}
-                        </Block>
-                        <BlockSpacer />
+                        { subforumsTotalPages > 1 ? (
+                            <BlockOuterTop>
+                                <Pagination currentPage={subforumsPage} totalPages={subforumsTotalPages} setPage={setSubforumsPage} />
+                            </BlockOuterTop>
+                        ) : (
+                            <>
+                            </>
+                        ) }
+                        
+                        { subforums.length > 0 ? (
+                            <>
+                                <Block>
+                                    <ForumNodeList forums={subforums} />
+                                </Block>
+                                <BlockSpacer />
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )}
+                        
                     </>
                 )}
 
-                <BlockOuterTop>
-                    <Pagination currentPage={threadsPage} totalPages={threadsTotalPages} setPage={setThreadsPage} />
-                </BlockOuterTop>
+                { threadsTotalPages > 1 ? (
+                    <BlockOuterTop>
+                        <Pagination currentPage={threadsPage} totalPages={threadsTotalPages} setPage={setThreadsPage} />
+                    </BlockOuterTop>
+                ) : (
+                    <>
+                    </>
+                )}
                 <Block>
                     <BlockHeader>
-                        {id}
+                        <BlockSpacer />
                     </BlockHeader>
                     {threadsLoading ? (
                         <>
                         </>
                     ) : (
                         <>
-                            {threads.map((thread) => (
-                                <BlockItem>
-                                    <ThreadNode thread={thread} />
-                                </BlockItem>
-                            ))}
+                            <ThreadNodeList threads={threads} />
                         </>
                     )}
                 </Block>

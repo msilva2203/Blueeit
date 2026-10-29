@@ -8,23 +8,3 @@
     padding-top: 32px;
     padding-bottom: 32px;
 }
-
-.blueeit-main-page-withsidebar {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-    margin-bottom: auto;
-    min-height: 1;
-}
-
-.blueeit-main-page-content {
-    display: table-cell;
-    vertical-align: top;
-    padding-right: 12px;
-}
-
-.blueeit-amin-page-sidebar {
-    display: table-cell;
-    vertical-align: top;
-    width: 256px;
-}

@@ -71,6 +71,16 @@
   --color-cyan-10: #23afd0;
   --color-cyan-11: #4ccce6;
   --color-cyan-12: #b6ecf7;
+  --color-red-1: #590d22;
+  --color-red-2: #800f2f;
+  --color-red-3: #a4133c;
+  --color-red-4: #c9184a;
+  --color-red-5: #ff4d6d;
+  --color-red-6: #ff758f;
+  --color-red-7: #ff8fa3;
+  --color-red-8: #ffb3c1;
+  --color-red-9: #ffccd5;
+  --color-red-10: #fff0f3;
 
   --text: #6b6375;
   --text-h: #08060d;
@@ -170,9 +180,12 @@ h3 {
   margin: 0;
 }
 a {
+  font-size: 15px;
   color:var(--color-blue-12);
-  color:inherit;
   text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 p {
   margin: 0;
@@ -186,6 +199,9 @@ dd {
   color:var(--color-mauve-12);
   font-size: 14px;
   margin: 0;
+}
+section:not(:last-child) {
+  padding-bottom: 24px;
 }
 
 .minor {
@@ -208,6 +224,11 @@ dd {
 
 .blueeit-pairs.inline>dd {
   display: inline;
+}
+
+.blueeit-error {
+  font-weight: 500;
+  color: var(--color-red-4);
 }
 
 code,

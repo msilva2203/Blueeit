@@ -78,16 +78,29 @@ export default function ThreadPage() {
                     </>
                 ) : (
                     <>
-                        <BlockOuterTop>
-                            <Pagination currentPage={page} totalPages={totalPages} setPage={setPage} />
-                        </BlockOuterTop>
-
+                        { totalPages > 1 ? (
+                            <>
+                                <BlockOuterTop>
+                                    <Pagination currentPage={page} totalPages={totalPages} setPage={setPage} />
+                                </BlockOuterTop>
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )}
+                        
                         <PostList posts={posts} />
-
-                        <BlockOuterBottom>
-                            <Pagination currentPage={page} totalPages={totalPages} setPage={setPage} />
-                        </BlockOuterBottom>
-
+                        
+                        { totalPages > 1 ? (
+                            <>
+                                <BlockOuterBottom>
+                                    <Pagination currentPage={page} totalPages={totalPages} setPage={setPage} />
+                                </BlockOuterBottom>
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )}
                     </>
                 )}
             </PageLayout>
