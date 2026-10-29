@@ -13,6 +13,7 @@ Blueeit is a forum web application developed as a personal project to explore fu
 - [ ] Request and model validation
 - [ ] User authentication and authorization
 - [ ] Forum, thread and post creation from the frontend
+- [ ] Online members sidepanel
 - [ ] PostgreSQL database integration using EF (Entity Framework)
 - [ ] Automated tests
 
@@ -70,3 +71,23 @@ Open http://localhost:5173/ in your browser.
 
 ## Project Status
 Blueeit is a work in progress. Features and architecture are being developed incrementally as part of an ongoing learning project.
+
+## Screenshots
+
+### Forums
+![Blueeit members page](Assets/Images/forums.png)
+
+### Forum details
+![Blueeit members page](Assets/Images/forums-details.png)
+
+### Thread
+![Blueeit members page](Assets/Images/thread.png)
+
+### Whats-New page
+![Blueeit members page](Assets/Images/whats-new.png)
+
+### Members page
+![Blueeit members page](Assets/Images/members.png)
+
+### Member Profile
+![Blueeit members page](Assets/Images/profile.png)

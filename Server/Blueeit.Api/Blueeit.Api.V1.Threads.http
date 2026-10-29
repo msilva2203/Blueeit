@@ -23,7 +23,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "authorId": 1,
+    "authorId": 4,
     "content": "This is a post!"
 }
 

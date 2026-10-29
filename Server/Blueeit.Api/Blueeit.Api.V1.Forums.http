@@ -34,30 +34,42 @@ Content-Type: application/json
 
 {
     "authorId": 1,
-    "title": "Bug Reports"
+    "title": "Creative Corner"
 }
 
 ###
 
-POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/subforums
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/2/subforums
 Accept: application/json
 Content-Type: application/json
 
 {
     "authorId": 1,
-    "title": "Gameplay Bug Reports"
+    "title": "Programming"
 }
 
 ###
 
-POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/1/threads
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/2/threads
 Accept: application/json
 Content-Type: application/json
 
 {
     "authorId": 1,
-    "title": "Bad Matchmaking",
-    "content": "Welcome to the new thread!"
+    "title": "What are you working on lately",
+    "content": "Share your current side projects, experiments and the problems you're trying to solve."
+}
+
+###
+
+POST {{BlueeitApi_HostAddress}}/api/{{BlueeitApi_Version}}/forums/2/threads
+Accept: application/json
+Content-Type: application/json
+
+{
+    "authorId": 1,
+    "title": "C++ vs Rust for systems programming",
+    "content": "A discussion about ownership, performance, tooling and developer experience."
 }
 
 ###
